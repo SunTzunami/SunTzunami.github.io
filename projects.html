@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Projects | Sajag Swami</title>
+  <meta name="description" content="Projects and technical experiments by Sajag Swami.">
+  <meta name="author" content="Sajag Swami">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f1f1ee">
+  <link rel="canonical" href="https://suntzunami.github.io/projects.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sajag Swami">
+  <meta property="og:title" content="Projects | Sajag Swami">
+  <meta property="og:description" content="Projects and technical experiments by Sajag Swami.">
+  <meta property="og:url" content="https://suntzunami.github.io/projects.html">
+  <meta property="og:image" content="https://suntzunami.github.io/images/profile-2026-1200.jpg">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/newsreader-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <script>document.documentElement.classList.add("js")</script>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="navbar" aria-label="Primary">
+      <a class="dog-link" href="moti.html" aria-label="In memory of मोती (Moti)" title="मोती (Moti) — In Memoriam">
+        <svg class="dog" viewBox="32 0 104 112" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="dogleg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset=".12" stop-color="#c28a47" />
+              <stop offset=".42" stop-color="#fbf7ee" />
+            </linearGradient>
+          </defs>
+          <ellipse class="dog-shadow" cx="80" cy="109" rx="40" ry="2.6" />
+          <g class="dog-tail">
+            <path d="M112 104C124 106 131 97 128 84" fill="none" stroke="#c28a47" stroke-width="7"
+              stroke-linecap="round" />
+          </g>
+          <path d="M44 109C42 87 54 64 80 62C106 64 118 87 116 109Z" fill="#c28a47" />
+          <path d="M67 72C67 95 93 95 93 72Z" fill="#fbf7ee" />
+          <path d="M57 107V85C57 79 59 77 62 77C65 77 67 79 67 85V107Z" fill="url(#dogleg)" />
+          <path d="M93 107V85C93 79 95 77 98 77C101 77 103 79 103 85V107Z" fill="url(#dogleg)" />
+          <ellipse cx="62" cy="104.5" rx="8" ry="5.4" fill="#fbf7ee" />
+          <ellipse cx="98" cy="104.5" rx="8" ry="5.4" fill="#fbf7ee" />
+          <path d="M59 105.5V108M62 106V108.6M65 105.5V108M95 105.5V108M98 106V108.6M101 105.5V108" stroke="#d9cdb8"
+            stroke-width="1.1" stroke-linecap="round" />
+          <g transform="translate(80 78) scale(.9 .96) translate(-80 -78)">
+            <g class="dog-head">
+              <g class="dog-ear-l">
+                <path d="M57 41C51 32 49 20 51 9C62 12 71 21 75 34Z" fill="#96622e" />
+                <path d="M58 36C55 29 54 22 55 15C62 18 67 24 70 32Z" fill="#b57b55" />
+              </g>
+              <g class="dog-ear-r">
+                <path d="M104 41C111 31 113 19 109 9C106 13 102 14 99 13C90 18 86 26 85 34Z" fill="#96622e" />
+                <path d="M99 13C103 14 106 13 109 9C108 16 105 19 100 19Z" fill="#b57b55" />
+              </g>
+              <path d="M80 24C103 24 111 38 110 50C109 64 97 77 80 79C63 77 51 64 50 50C49 38 57 24 80 24Z"
+                fill="#c28a47" />
+              <ellipse cx="80" cy="33" rx="15" ry="7" fill="#dcae6f" opacity=".55" />
+              <ellipse cx="60" cy="58" rx="6.5" ry="6" fill="#dcae6f" opacity=".4" />
+              <ellipse cx="100" cy="58" rx="6.5" ry="6" fill="#dcae6f" opacity=".4" />
+              <g class="dog-face">
+                <path d="M66 55C65 67 71 77 80 78.5C89 77 95 67 94 55C89 50 71 50 66 55Z" fill="#f1e2c6" />
+                <ellipse cx="68" cy="40" rx="4.4" ry="2.7" fill="#e8c48a" />
+                <ellipse cx="92" cy="40" rx="4.4" ry="2.7" fill="#e8c48a" />
+                <g class="dog-eye" data-cx="68" data-cy="49"
+                  transform="translate(68 49) scale(1 .06) translate(-68 -49)">
+                  <ellipse cx="68" cy="49" rx="5.6" ry="5.8" fill="#4b2b14" stroke="#1c100a" stroke-width="1" />
+                  <g class="dog-pupil">
+                    <circle cx="68" cy="49" r="3.5" fill="#120a06" />
+                    <circle cx="69.4" cy="47.5" r="1.25" fill="#fff" />
+                  </g>
+                </g>
+                <g class="dog-eye" data-cx="92" data-cy="49"
+                  transform="translate(92 49) scale(1 .06) translate(-92 -49)">
+                  <ellipse cx="92" cy="49" rx="5.6" ry="5.8" fill="#4b2b14" stroke="#1c100a" stroke-width="1" />
+                  <g class="dog-pupil">
+                    <circle cx="92" cy="49" r="3.5" fill="#120a06" />
+                    <circle cx="93.4" cy="47.5" r="1.25" fill="#fff" />
+                  </g>
+                </g>
+                <path class="dog-tongue" transform="translate(80 72.5) scale(1 0) translate(-80 -72.5)"
+                  d="M76 72.5C76 81 84 81 84 72.5Z" fill="#e58a95" />
+                <path d="M80 66.5V70M80 70C77 74 72 74 70 71M80 70C83 74 88 74 90 71" fill="none" stroke="#261a18"
+                  stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                <ellipse cx="80" cy="62" rx="6.6" ry="4.6" fill="#261a18" />
+                <ellipse cx="78" cy="60.4" rx="2.2" ry="1" fill="#fff" opacity=".35" />
+              </g>
+            </g>
+          </g>
+        </svg>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="projects.html" aria-current="page">Projects</a>
+        <a href="publications.html">Publications</a>
+        <a href="lab_log.html">Lab Log</a>
+        <a href="personal.html">Personal</a>
+        <a href="SwamiSajagCV2026.pdf">CV</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <header class="page-header">
+      <h1>Projects</h1>
+      <p class="page-intro">Things I've built because I was curious, annoyed, or both.</p>
+    </header>
+
+    <div class="project-list">
+      <article class="project" id="insho">
+        <div class="project-year" aria-hidden="true">2026</div>
+        <div class="project-title-row">
+          <h2>Insho 印章: Gesture-Based PDF Reader <span class="circa">circa 2026</span></h2><span class="tags">Computer
+            Vision · HCI · MediaPipe · React</span>
+        </div>
+        <blockquote>
+          <p>“The best interface is no interface.”</p><cite>— Golden Krishna</cite>
+        </blockquote>
+        <div class="project-copy">
+          <p>When I was a kid, I used to read books and comics while eating (Tintin, Tinkle, ACK etc.). These days I
+            mostly read ebooks and papers, and keeping my laptop close to a plate of food is not quite convenient. One
+            misstep and I could have a hole in my pockets.</p>
+          <p>So I built <strong>Insho 印章</strong>: a hands-free, camera-powered PDF reader that lets me navigate
+            documents entirely with hand gestures (turning pages, smooth scrolling via a floating virtual joystick,
+            and pinch-to-zoom), so I can sit comfortably away from the computer without touching it.</p>
+          <p>Under the hood, it runs Google MediaPipe HandLandmarker directly on-device using WebAssembly and WebGL. A
+            custom heuristic gesture engine translates 21 3D hand landmarks into actions in real time, keeping
+            everything private without uploading any video or documents to the cloud.</p>
+          <p>I still use it occasionally (roughly once a week or a few times a month), which is probably the real test
+            of whether this side project was useful.</p>
+        </div>
+        <div class="project-media">
+          <img src="images/projects/scrolling.png" alt="Insho 印章: hands-free gesture scrolling while eating"
+            loading="lazy" decoding="async" width="1264" height="848">
+          <div class="caption">Insho 印章: hands-free document navigation and gesture control while dining.</div>
+        </div>
+        <p class="project-links"><a href="eyeread.html">Read the project notes</a></p>
+      </article>
+
+      <article class="project" id="spendsight">
+        <div class="project-title-row">
+          <h2>SpendSight <span class="circa">circa 2026</span></h2><span class="tags">On-Device AI · Small LLMs ·
+            Evaluation · Personal Finance</span>
+        </div>
+        <blockquote>
+          <p>“A part of good science is to see what everyone else can see but think what no one else has ever said.”</p>
+          <cite>— Amos Tversky, quoted in Michael Lewis's <em>The Undoing Project</em></cite>
+        </blockquote>
+        <div class="project-copy">
+          <p>I already had a personal dashboard showing me summaries of spending and yearly/monthly trends, but I
+            wanted to ask questions like:</p>
+          <p><em>“How does my grocery spending this month compare with the same month last year?”</em></p>
+          <p>I also didn't want to send my financial data to a cloud LLM.</p>
+          <p>So I started experimenting with small language models that could run locally on my computer. I wanted
+            responses in a few seconds, preferably under 5s, which ruled out simply throwing a large model at the
+            problem.</p>
+          <p>My early experiments back in January 2026 showed that sub-2B models were surprisingly bad at reliably
+            generating analytical code. Tool calling worked better, but putting every possible tool definition into
+            the prompt made the system slower and less accurate.</p>
+          <p>I ended up splitting the task into two stages: <strong>which tool should be used, and what parameters
+              should it receive?</strong></p>
+          <p>I built a 115-query evaluation suite and benchmarked small models on accuracy, speed, memory use, and
+            failure modes on an 8 GB M1 Mac.</p>
+          <p>With a university classmate, I wrote up the findings. The part I'm probably most proud of is that I did
+            the whole thing independently, without funding or special infrastructure, and still managed to get the
+            work accepted at workshops at COLM and EMNLP.</p>
+          <p>Also, on a completely different metric, the resulting system helped me cut my snack spending by about
+            <strong>85%, saving more than ¥30,000</strong> (and also a few body-fat percentage points, I guess).
+          </p>
+          <p>That is probably the most tangible ROI I've ever measured.</p>
+        </div>
+        <div class="project-media">
+          <img src="images/projects/spending_snacks.png"
+            alt="SpendSight natural language query plotting snack spending trends over time" loading="lazy"
+            decoding="async" width="2232" height="1460">
+          <div class="caption">SpendSight executing a local query and generating the spending trend chart in 3.4
+            seconds on an M1 Mac.</div>
+        </div>
+        <p class="project-links"><a href="https://github.com/SunTzunami/ExpenseSense" target="_blank"
+            rel="noreferrer">GitHub</a> · <a href="publications.html#spendsight">Publication</a></p>
+      </article>
+
+      <article class="project" id="normad">
+        <div class="project-title-row">
+          <h2>Cultural-Context-Robustness <span class="circa">circa 2026</span></h2><span class="tags">LLM Evaluation
+            · NLP · Culture · Multilingual AI</span>
+        </div>
+        <blockquote>
+          <p>“The limits of my language mean the limits of my world.”</p><cite>— Ludwig Wittgenstein</cite>
+        </blockquote>
+        <div class="project-copy">
+          <p>I use LLMs almost every day, and at some point I started wondering how much of their behavior depends on
+            the language and context in which I ask a question.</p>
+          <p>While working on SpendSight, I became interested in how NLP researchers actually evaluate these systems,
+            so I started contributing to Cohere Labs' open-source research on LLM behavior across cultural and
+            linguistic contexts.</p>
+          <p>My main work was building evaluation pipelines and testing models under different language and contextual
+            conditions.</p>
+          <p>The question that kept pulling me back was quite simple:</p>
+          <p><strong>If I ask the same thing in a different language, should I get the same answer?</strong></p>
+          <p>This project was one of my first attempts to investigate that systematically, and it changed the way I
+            think about LLM benchmarks. A model doesn't exist in a vacuum. The conditions around the model matter too.
+          </p>
+        </div>
+        <p class="project-links"><a href="https://github.com/Cohere-Labs-Community/Cultural-Context-Robustness"
+            target="_blank" rel="noreferrer">GitHub</a> · <a href="publications.html#normad">Publication</a></p>
+      </article>
+
+      <article class="project" id="anything-arcade">
+        <div class="project-title-row">
+          <h2>Anything Arcade <span class="circa">circa 2026</span></h2><span class="tags">Game Development ·
+            Multimodal AI · Hackathon</span>
+        </div>
+        <blockquote>
+          <p>“Sheldon, it's just a game.”<br>“No, Leonard. It's a digital representation of my hopes, my dreams, and
+            my countless hours of clicking!”</p>
+        </blockquote>
+        <div class="project-copy">
+          <p>For the Gemini 3 Tokyo Hackathon, my team had to build a game.</p>
+          <p>We decided to make one where people could create their own characters, and Nano Banana made it possible
+            to turn uploaded images into usable game assets.</p>
+          <p>At one point we uploaded images of <strong>Shohei Ohtani and Cristiano Ronaldo</strong> and got them
+            working in the game.</p>
+          <p>It was a hackathon, so the goal was less “build the perfect game” and more “build something that works
+            before the clock runs out.”</p>
+          <p>It was also a good reminder that sometimes the best reason to build something is simply that it sounds
+            fun.</p>
+        </div>
+        <div class="project-media"><img src="images/projects/gemini_hackathon.png"
+            alt="Anything Arcade hackathon poster" loading="lazy" decoding="async" width="1718" height="1166">
+          <div class="caption">Hackathon project poster.</div>
+        </div>
+        <p class="project-links"><a href="https://github.com/henrihal/DeepMindHackathon" target="_blank"
+            rel="noreferrer">GitHub</a></p>
+      </article>
+
+      <article class="project" id="leg-days">
+        <div class="project-year" aria-hidden="true">2024</div>
+
+        <div class="project-title-row">
+          <h2>Do Leg Days Suck? <span class="circa">circa 2024</span></h2>
+          <span class="tags">Self-Experiment · Fitness · Data</span>
+        </div>
+
+        <blockquote>
+          <p>“All men are created equal; some just work harder in the preseason.”</p>
+          <cite>— Emmitt Smith</cite>
+        </blockquote>
+
+        <div class="project-copy">
+          <p>
+            People had always told me that leg day was the hardest day at the gym and I used to wonder, boy, is it
+            really that bad?
+          </p>
+
+          <p>I started believing them after adding Bulgarian split squats to my routine.</p>
+
+          <p>So I checked.</p>
+
+          <p>
+            I compared my average heart rate during leg-day gym sessions with my average heart rate during other gym
+            sessions. There wasn't a sophisticated statistical model behind it. I just compared the two series and
+            looked at the means.
+          </p>
+
+          <p>The answer was pretty much what I wanted it to be:</p>
+
+          <p><strong>Leg days are harder.</strong></p>
+
+          <p>Scientifically decisive? Probably not.</p>
+
+          <p>Emotionally decisive? 100%.</p>
+        </div>
+
+        <div class="project-media">
+          <img src="images/projects/plot1.png" alt="Comparison of heart rate during leg-day and other gym sessions"
+            loading="lazy" decoding="async">
+          <div class="caption">
+            Average heart rate during leg-day sessions compared with other gym sessions.
+          </div>
+        </div>
+
+        <p class="project-links">
+          <a href="lab_log.html#leg-day">See the fuller analysis in the Lab Log</a>
+        </p>
+      </article>
+
+      <article class="project" id="fury">
+        <div class="project-year" aria-hidden="true">2021</div>
+        <div class="project-title-row">
+          <h2>FURY: Google Summer of Code <span class="circa">circa 2021</span></h2><span class="tags">Open Source ·
+            Scientific Computing · Visualization</span>
+        </div>
+        <blockquote>
+          <p>“What I cannot create, I do not understand.”</p><cite>— Richard Feynman</cite>
+        </blockquote>
+        <div class="project-copy">
+          <p>I first became interested in open source after seeing the culture around it at IIT Roorkee, and Google
+            Summer of Code seemed like a good excuse to finally get involved.</p>
+          <p>I worked with <strong>FURY</strong>, an open-source Python library for scientific visualization,
+            particularly around molecular visualization.</p>
+          <p>My main contribution was an MVP showing how FURY could be used for molecular visualization, along with
+            several smaller demonstrations.</p>
+          <p>One of the less glamorous parts of the project was dealing with documentation that was, let's say, not
+            always particularly intuitive.</p>
+          <p>More importantly, I learned how much open-source work is about things that aren't really “coding”:
+            writing documentation, keeping code clean, communicating clearly, and helping people who use what you've
+            built.</p>
+        </div>
+        <div class="project-media">
+          <img src="images/projects/brownian.gif" alt="Brownian motion visualization" loading="lazy" decoding="async"
+            width="600" height="600">
+          <div class="caption">Brownian motion particle simulation rendered with FURY.</div>
+        </div>
+        <p class="project-links"><a href="https://github.com/SunTzunami/FURY_experimental" target="_blank"
+            rel="noreferrer">Experiments</a> · <a href="https://github.com/fury-gl/fury/pull/452" target="_blank"
+            rel="noreferrer">FURY PR #452</a> · <a
+            href="https://gist.github.com/SunTzunami/a46467157483b798342016b1f77903ae" target="_blank"
+            rel="noreferrer">Final report</a> · <a href="https://blogs.python-gsoc.org/en/suntzunamis-blog/"
+            target="_blank" rel="noreferrer">GSoC blog</a></p>
+      </article>
+
+      <article class="project" id="heart-rate">
+        <div class="project-year" aria-hidden="true">2020</div>
+        <div class="project-title-row">
+          <h2>Is Exercising Good for One's Heart? <span class="circa">circa 2020</span></h2><span
+            class="tags">Statistics · Self-Experiment · Health Data</span>
+        </div>
+        <blockquote>
+          <p>“The important thing is not to stop questioning.”</p><cite>— Albert Einstein</cite>
+        </blockquote>
+        <div class="project-copy">
+          <p>Back in my third semester at IIT Roorkee, I started running and tracking my health metrics with a Fitbit.
+          </p>
+          <p>Over the next several months, I noticed my resting heart rate gradually falling. A quick web search
+            suggested that regular cardiovascular exercise could be one possible explanation.</p>
+          <p>So I decided to test it on my own data.</p>
+          <p>I aggregated my cumulative exercise and compared it with my resting heart rate. The scatter plot showed a
+            clear negative trend, and both Pearson and Spearman correlations were negative as well.</p>
+          <p>It was a very small experiment, and in retrospect it was also a statistically naive one. There were
+            plenty of possible confounders, and an N=1 observational analysis certainly cannot establish causality.
+          </p>
+          <p>But that wasn't really the point.</p>
+          <p>What interested me was that an ordinary observation from my own life could become a quantitative research
+            question.</p>
+          <p>That was one of the things that first made applied statistics click for me.</p>
+          <p>I kept tracking my resting heart rate afterward too. During COVID, a sudden change in the metric helped
+            alert me that something was wrong, and I self-isolated rather than risk passing it on to my family.</p>
+        </div>
+        <div class="project-media">
+          <img src="images/projects/rhr.png" alt="Resting heart rate versus cumulative exercise" loading="lazy"
+            decoding="async" width="494" height="342">
+          <div class="caption">Resting heart rate plotted against cumulative cardiovascular exercise.</div>
+        </div>
+      </article>
+
+      <article class="project" id="transience">
+        <div class="project-title-row">
+          <h2>Transience <span class="circa">circa 2020</span></h2><span class="tags">Pixel Art · Animation · Open
+            Source</span>
+        </div>
+        <blockquote>
+          <p>“Art enables us to find ourselves and lose ourselves at the same time.”</p><cite>— Thomas Merton</cite>
+        </blockquote>
+        <div class="project-copy">
+          <p>I had just finished watching Naruto and was very interested in Itachi at the time.</p>
+          <p>I've also been fascinated by pixel art since I was a kid, partly because I spent many hours playing retro
+            games.</p>
+          <p>So I decided to combine the two.</p>
+          <p>I drew all the pixel art myself in Piskel, then built the animation using Python Arcade. Along the way I
+            learned how to draw pixel art, edit video, work with animation, and read enough documentation to make the
+            whole thing behave.</p>
+          <p>Seeing it featured by Python Arcade was especially satisfying.</p>
+          <p>It was also one of my first open-source contributions, before GSoC.</p>
+        </div>
+        <div class="project-media">
+          <img src="images/projects/transience.gif" alt="Transience animation preview" loading="lazy" decoding="async"
+            width="640" height="480">
+          <div class="caption">Pixel art animation loop designed in Piskel and rendered using Python Arcade.</div>
+        </div>
+        <p class="project-links"><a
+            href="https://api.arcade.academy/en/stable/community/games/sample_games.html#transcience-animation"
+            target="_blank" rel="noreferrer">Featured by Python Arcade</a> · <a
+            href="https://github.com/SunTzunami/Transience_animation_PyArcade" target="_blank"
+            rel="noreferrer">GitHub</a></p>
+      </article>
+
+      <article class="project" id="space-light">
+        <div class="project-year" aria-hidden="true">2018–2019</div>
+        <div class="project-title-row">
+          <h2>Space and Light <span class="circa">circa 2018–2019</span></h2><span class="tags">C++ · Computer
+            Graphics · Astronomy · First Project</span>
+        </div>
+        <blockquote>
+          <p>“What I cannot create, I do not understand.”</p><cite>— Richard Feynman</cite>
+        </blockquote>
+        <div class="project-copy">
+          <p>In 2018–19, when I was 17ish, I absolutely loathed programming.</p>
+          <p>We were using Turbo C++ (which, from what I know, was the rage in the Cretaceous), and programming
+            felt frustratingly abstract to me. I couldn't really see what any of it was useful for.</p>
+          <p>Then our teacher asked us to make a project.</p>
+          <p>I liked maths and science, and I was preparing for the university entrance exams, so I thought: why not
+            make something related to science?</p>
+          <p>I found the graphics library, started experimenting, and ended up building a simulation that rendered
+            stars and the Milky Way.</p>
+          <p>For the first time, the things we'd been learning in class (pointers, classes, abstraction, and all the
+            rest) suddenly became useful parts of something I could actually see.</p>
+          <p>I got so engrossed in the project that I'd spend my lunch breaks in the computer labs, stuck to computer
+            screen, trying to debug cretaceous-era code, and ended up spending the entire holidays working on it.</p>
+          <p>My teacher was so surprised by the final result that she initially didn't believe I'd made it myself (as
+            I was not exactly known for being a fan of programming back then).</p>
+          <p>That project completely changed how I thought about programming.</p>
+          <p>I also built a small quiz with a dynamic timing system, where faster answers earned more points, along
+            with a leaderboard.</p>
+          <p>In retrospect, this project to me was what I presume is LLMs for most people (especially non-coders),
+            ability to communicate with a machine in a language and getting it to do what you want it to do.
+            It felt magical.</p>
+        </div>
+        <div class="media-grid three">
+          <img src="images/projects/dispersion.gif" alt="Light dispersion simulation" loading="lazy" decoding="async"
+            width="640" height="480">
+          <img src="images/projects/sunlight.gif" alt="Sunlight simulation" loading="lazy" decoding="async" width="640"
+            height="480">
+          <img src="images/projects/redgiant.gif" alt="Red giant simulation" loading="lazy" decoding="async" width="640"
+            height="480">
+        </div>
+        <div class="caption">C++ graphics simulations: light dispersion, solar rays, and red giant star evolution.
+        </div>
+        <p class="project-links"><a href="https://github.com/SunTzunami/Space_and_Light" target="_blank"
+            rel="noreferrer">GitHub</a></p>
+      </article>
+    </div>
+
+  </main>
+
+  <footer class="footer">Last updated: October 2026</footer>
+</body>
+
+</html>

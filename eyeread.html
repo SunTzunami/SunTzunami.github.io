@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Insho 印章: Project Notes | Sajag Swami</title>
+<meta name="description" content="Technical notes, architecture, and gesture heuristic engineering for Insho 印章: a hands-free vision-controlled PDF reader.">
+<meta name="author" content="Sajag Swami">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f1f1ee">
+<link rel="canonical" href="https://suntzunami.github.io/eyeread.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Sajag Swami">
+<meta property="og:title" content="Insho 印章: Project Notes | Sajag Swami">
+<meta property="og:description" content="Technical notes, architecture, and gesture heuristic engineering for Insho 印章: a hands-free vision-controlled PDF reader.">
+<meta property="og:url" content="https://suntzunami.github.io/eyeread.html">
+<meta property="og:image" content="https://suntzunami.github.io/images/projects/scrolling.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/newsreader-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>document.documentElement.classList.add("js")</script>
+<link rel="stylesheet" href="style.css">
+<script src="script.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <nav class="navbar" aria-label="Primary">
+    <a class="dog-link" href="moti.html" aria-label="In memory of मोती (Moti)" title="मोती (Moti) — In Memoriam">
+      <svg class="dog" viewBox="32 0 104 112" aria-hidden="true" focusable="false">
+        <defs><linearGradient id="dogleg" x1="0" y1="0" x2="0" y2="1"><stop offset=".12" stop-color="#c28a47"/><stop offset=".42" stop-color="#fbf7ee"/></linearGradient></defs>
+        <ellipse class="dog-shadow" cx="80" cy="109" rx="40" ry="2.6"/>
+        <g class="dog-tail"><path d="M112 104C124 106 131 97 128 84" fill="none" stroke="#c28a47" stroke-width="7" stroke-linecap="round"/></g>
+        <path d="M44 109C42 87 54 64 80 62C106 64 118 87 116 109Z" fill="#c28a47"/>
+        <path d="M67 72C67 95 93 95 93 72Z" fill="#fbf7ee"/>
+        <path d="M57 107V85C57 79 59 77 62 77C65 77 67 79 67 85V107Z" fill="url(#dogleg)"/>
+        <path d="M93 107V85C93 79 95 77 98 77C101 77 103 79 103 85V107Z" fill="url(#dogleg)"/>
+        <ellipse cx="62" cy="104.5" rx="8" ry="5.4" fill="#fbf7ee"/><ellipse cx="98" cy="104.5" rx="8" ry="5.4" fill="#fbf7ee"/>
+        <path d="M59 105.5V108M62 106V108.6M65 105.5V108M95 105.5V108M98 106V108.6M101 105.5V108" stroke="#d9cdb8" stroke-width="1.1" stroke-linecap="round"/>
+        <g transform="translate(80 78) scale(.9 .96) translate(-80 -78)"><g class="dog-head">
+          <g class="dog-ear-l"><path d="M57 41C51 32 49 20 51 9C62 12 71 21 75 34Z" fill="#96622e"/><path d="M58 36C55 29 54 22 55 15C62 18 67 24 70 32Z" fill="#b57b55"/></g>
+          <g class="dog-ear-r"><path d="M104 41C111 31 113 19 109 9C106 13 102 14 99 13C90 18 86 26 85 34Z" fill="#96622e"/><path d="M99 13C103 14 106 13 109 9C108 16 105 19 100 19Z" fill="#b57b55"/></g>
+          <path d="M80 24C103 24 111 38 110 50C109 64 97 77 80 79C63 77 51 64 50 50C49 38 57 24 80 24Z" fill="#c28a47"/>
+          <ellipse cx="80" cy="33" rx="15" ry="7" fill="#dcae6f" opacity=".55"/>
+          <ellipse cx="60" cy="58" rx="6.5" ry="6" fill="#dcae6f" opacity=".4"/><ellipse cx="100" cy="58" rx="6.5" ry="6" fill="#dcae6f" opacity=".4"/>
+          <g class="dog-face">
+            <path d="M66 55C65 67 71 77 80 78.5C89 77 95 67 94 55C89 50 71 50 66 55Z" fill="#f1e2c6"/>
+            <ellipse cx="68" cy="40" rx="4.4" ry="2.7" fill="#e8c48a"/><ellipse cx="92" cy="40" rx="4.4" ry="2.7" fill="#e8c48a"/>
+            <g class="dog-eye" data-cx="68" data-cy="49" transform="translate(68 49) scale(1 .06) translate(-68 -49)"><ellipse cx="68" cy="49" rx="5.6" ry="5.8" fill="#4b2b14" stroke="#1c100a" stroke-width="1"/><g class="dog-pupil"><circle cx="68" cy="49" r="3.5" fill="#120a06"/><circle cx="69.4" cy="47.5" r="1.25" fill="#fff"/></g></g>
+            <g class="dog-eye" data-cx="92" data-cy="49" transform="translate(92 49) scale(1 .06) translate(-92 -49)"><ellipse cx="92" cy="49" rx="5.6" ry="5.8" fill="#4b2b14" stroke="#1c100a" stroke-width="1"/><g class="dog-pupil"><circle cx="92" cy="49" r="3.5" fill="#120a06"/><circle cx="93.4" cy="47.5" r="1.25" fill="#fff"/></g></g>
+            <path class="dog-tongue" transform="translate(80 72.5) scale(1 0) translate(-80 -72.5)" d="M76 72.5C76 81 84 81 84 72.5Z" fill="#e58a95"/>
+            <path d="M80 66.5V70M80 70C77 74 72 74 70 71M80 70C83 74 88 74 90 71" fill="none" stroke="#261a18" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <ellipse cx="80" cy="62" rx="6.6" ry="4.6" fill="#261a18"/><ellipse cx="78" cy="60.4" rx="2.2" ry="1" fill="#fff" opacity=".35"/>
+          </g>
+        </g></g>
+      </svg>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="publications.html">Publications</a>
+      <a href="lab_log.html">Lab Log</a>
+      <a href="personal.html">Personal</a>
+      <a href="SwamiSajagCV2026.pdf">CV</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+  <div class="breadcrumb-nav">
+    <a href="projects.html" class="back-link">
+      <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd" /></svg>
+      <span>Back to Projects</span>
+    </a>
+  </div>
+
+  <article class="project-detail">
+    <header class="page-header">
+      <h1>Insho 印章</h1>
+      <p class="hero-role"><strong>Hands-Free, Vision-Controlled PDF Reader for Distance &amp; Mess-Free Reading</strong></p>
+      <div class="tags" style="margin-top: 10px;">
+        <span class="tag">Computer Vision</span>
+        <span class="tag">HCI</span>
+        <span class="tag">Google MediaPipe</span>
+        <span class="tag">WebAssembly</span>
+        <span class="tag">React 19</span>
+        <span class="tag">TypeScript</span>
+      </div>
+    </header>
+
+    <div class="project-copy">
+      <p><strong>Insho 印章</strong> is an intelligent, camera-powered PDF reader that lets you navigate, scroll, and zoom documents completely hands-free using natural hand gestures. No mice, no keyboards, and no touchscreen smudges: designed specifically for reading comfortably from across your desk or while having meals.</p>
+    </div>
+
+    <blockquote>
+      <p>“As a kid, I used to read books while having meals. Now I read technical papers, textbooks, and ebooks on my computer, which can get messy if I keep them close while eating. I wanted a way to read from a comfortable distance away from my screen without constantly wiping my hands to touch the keyboard or trackpad.”</p>
+    </blockquote>
+
+    <div class="project-media">
+      <img src="images/projects/scrolling.png" alt="Insho 印章 hands-free reading while dining illustration" loading="lazy" decoding="async" width="1264" height="848">
+      <div class="caption">Insho 印章: hands-free document navigation and gesture control while dining.</div>
+    </div>
+
+    <section class="section">
+      <h2>Key Features</h2>
+      <ul class="feature-list">
+        <li><strong>Touchless Navigation:</strong> Turn pages forward or backward, scroll in any direction, and zoom smoothly without physical contact.</li>
+        <li><strong>Floating Virtual Joystick:</strong> An intuitive open-palm joystick mode that lets you scroll vertically or horizontally based on relative hand displacement.</li>
+        <li><strong>Smart Axis Locking:</strong> Automatically detects whether you intend to scroll vertically or horizontally and locks the axis to eliminate jitter and diagonal drift.</li>
+        <li><strong>Proportional Pinch-to-Zoom:</strong> Pinch thumb and index finger to scale the document between 50% and 400% zoom with fine-grained control.</li>
+        <li><strong>Instant Zoom Reset:</strong> Quickly snap back to default 100% view using a simple "OK" hand sign.</li>
+        <li><strong>Pause &amp; Resume Tracking:</strong> Toggle gesture recognition on or off with the Spiderman sign so you can eat, take notes, or talk without accidentally triggering gestures.</li>
+        <li><strong>100% Private &amp; Local:</strong> All computer vision inference runs strictly on-device in WebAssembly/WebGL. No video, images, or documents are ever uploaded to the cloud.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Vision Model &amp; Architecture</h2>
+      <p>Insho 印章 leverages <strong>Google MediaPipe Tasks Vision</strong> running directly in the browser runtime:</p>
+      
+      <div class="code-block-card">
+        <pre class="diagram"><code>┌────────────────────────────────────────────────────────┐
+│            Webcam Stream (640x480 @ 60fps)             │
+└───────────────────────────┬────────────────────────────┘
+                            │
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│     Google MediaPipe HandLandmarker (WASM + WebGL)     │
+│        hand_landmarker.task (21 3D Landmarks)          │
+└───────────────────────────┬────────────────────────────┘
+                            │
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│  Heuristic Gesture Engine (Euclidean Geometry &amp; Axis)  │
+└───────────────┬─────────────────────────┬──────────────┘
+                │                         │
+                ▼                         ▼
+   [Page Trigger &amp; Flip]         [Virtual Joystick 2D]
+                │                         │
+                └───────────────┬─────────┘
+                                │
+                                ▼
+┌────────────────────────────────────────────────────────┐
+│         React-PDF Viewer &amp; Web Worker Canvas           │
+└────────────────────────────────────────────────────────┘</code></pre>
+      </div>
+
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h4>Model Bundle</h4>
+          <p><code>hand_landmarker.task</code> (7.8 MB pre-trained on-device weights)</p>
+        </div>
+        <div class="spec-card">
+          <h4>Execution Target</h4>
+          <p>Browser WebAssembly delegated to GPU via WebGL</p>
+        </div>
+        <div class="spec-card">
+          <h4>Landmarks</h4>
+          <p>21 3D Cartesian coordinates (x, y, z) per hand in normalized camera space</p>
+        </div>
+        <div class="spec-card">
+          <h4>Confidence Gate</h4>
+          <p>0.70 detection, 0.70 presence, 0.70 tracking threshold</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Gesture Controls &amp; How It Works</h2>
+      <div class="table-responsive">
+        <table class="gesture-table">
+          <thead>
+            <tr>
+              <th scope="col">Gesture</th>
+              <th scope="col">Hand Pose</th>
+              <th scope="col">Action</th>
+              <th scope="col">Mechanism &amp; Parameters</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Virtual Joystick</strong></td>
+              <td>Open Palm (all 5 fingers extended)</td>
+              <td>Smooth 2D Scroll (Up / Down / Left / Right)</td>
+              <td>Anchors initial hand position; displacement scales speed with ±12% deadzone and axis locking.</td>
+            </tr>
+            <tr>
+              <td><strong>Next Page</strong></td>
+              <td>Two Fingers Pointing Down (Index + Middle down)</td>
+              <td>Next Page</td>
+              <td>Flips to the subsequent page with a 1000ms debounce cooldown.</td>
+            </tr>
+            <tr>
+              <td><strong>Previous Page</strong></td>
+              <td>Two Fingers Pointing Up (Index + Middle up)</td>
+              <td>Previous Page</td>
+              <td>Flips to the preceding page with a 1000ms debounce cooldown.</td>
+            </tr>
+            <tr>
+              <td><strong>Pinch-to-Zoom</strong></td>
+              <td>Index + Thumb Pinch</td>
+              <td>Dynamic Zoom (50% – 400%)</td>
+              <td>Spreading index and thumb zooms in; bringing them closer zooms out.</td>
+            </tr>
+            <tr>
+              <td><strong>Reset Zoom</strong></td>
+              <td>"OK" Sign (Thumb &amp; index tips touching)</td>
+              <td>Reset to 100%</td>
+              <td>Restores page scaling to default 1.0x with a 1000ms cooldown.</td>
+            </tr>
+            <tr>
+              <td><strong>Pause / Resume</strong></td>
+              <td>"Spiderman" Sign (Thumb, index &amp; pinky extended)</td>
+              <td>Toggle Tracking Freeze</td>
+              <td>Freezes gesture recognition until toggled again with a 1500ms safety guard.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Under the Hood: Gesture Classification Logic</h2>
+      <div class="project-copy">
+        <p>Insho 印章 translates raw landmark coordinates into semantic interactions through spatial geometric checks:</p>
+        <ol>
+          <li><strong>Finger Extension Heuristic:</strong> A finger is considered extended if the Euclidean distance from the wrist (Landmark 0) to its fingertip exceeds the distance from the wrist to its PIP joint.</li>
+          <li><strong>Pointing Direction:</strong> Comparing fingertip Y-coordinates against metacarpophalangeal (MCP) joints determines upward versus downward orientation.</li>
+          <li><strong>Virtual Joystick Mechanics:</strong> Upon transitioning into Open Palm, the initial wrist coordinate is recorded as the neutral anchor point. Continuous displacement offsets are computed each frame with an active deadzone of 12% to prevent drift. Once the threshold is broken, the axis locks to whichever direction has greater magnitude until reset.</li>
+          <li><strong>Continuous Pinch Math:</strong> Isolates the Euclidean distance between Landmark 4 (thumb tip) and Landmark 8 (index tip), applying deadband filtering to prevent jitter on release.</li>
+        </ol>
+      </div>
+    </section>
+  </article>
+</main>
+
+<footer class="footer">Last updated: October 2026</footer>
+</body>
+</html>
