@@ -75,7 +75,7 @@
         y1: py,
         x2: padL + chartW,
         y2: py,
-        stroke: '#dcdcd5',
+        stroke: 'var(--line)',
         'stroke-width': '1',
         'stroke-dasharray': g === 0 ? 'none' : '3 3'
       });
@@ -85,7 +85,7 @@
         x: padL - 8,
         y: py + 4,
         'text-anchor': 'end',
-        fill: '#62656b',
+        fill: 'var(--ink-3)',
         'font-family': 'var(--sans, sans-serif)',
         'font-size': '11px',
         'font-weight': '450'
@@ -134,7 +134,7 @@
       cx: pts[pts.length - 1].x,
       cy: pts[pts.length - 1].y,
       r: '4.5',
-      fill: '#ffffff',
+      fill: 'var(--surface)',
       stroke: opts.color || '#b5771f',
       'stroke-width': '2.5'
     });
@@ -147,7 +147,7 @@
         x: xPt.x,
         y: padT + chartH + 18,
         'text-anchor': xIdx === 0 ? 'start' : (xIdx + xInterval >= series.length ? 'end' : 'middle'),
-        fill: '#62656b',
+        fill: 'var(--ink-3)',
         'font-family': 'var(--sans, sans-serif)',
         'font-size': '11px',
         'font-weight': '450'
@@ -162,10 +162,10 @@
 
     var crosshair = addEl(svg, 'line', {
       x1: 0, y1: padT, x2: 0, y2: padT + chartH,
-      stroke: '#45484e', 'stroke-width': '1', 'stroke-dasharray': '2 2', opacity: '0'
+      stroke: 'var(--ink-2)', 'stroke-width': '1', 'stroke-dasharray': '2 2', opacity: '0'
     });
     var hoverCircle = addEl(svg, 'circle', {
-      cx: 0, cy: 0, r: '5', fill: '#ffffff', stroke: opts.color || '#b5771f', 'stroke-width': '2.5', opacity: '0'
+      cx: 0, cy: 0, r: '5', fill: 'var(--surface)', stroke: opts.color || '#b5771f', 'stroke-width': '2.5', opacity: '0'
     });
 
     container.appendChild(svg);
@@ -254,7 +254,7 @@
       var py = padT + (g / steps) * chartH;
       addEl(svg, 'line', {
         x1: padL, y1: py, x2: padL + chartW, y2: py,
-        stroke: '#dcdcd5', 'stroke-width': '1', 'stroke-dasharray': g === steps ? 'none' : '3 3'
+        stroke: 'var(--line)', 'stroke-width': '1', 'stroke-dasharray': g === steps ? 'none' : '3 3'
       });
 
       // Left axis label (Pace min/km - top is faster paceMin, bottom is slower paceMax)
@@ -314,9 +314,9 @@
 
     // Start & End indicators
     addEl(svg, 'circle', { cx: pacePts[0].x, cy: pacePts[0].y, r: '3.5', fill: '#2563eb' });
-    addEl(svg, 'circle', { cx: pacePts[pacePts.length - 1].x, cy: pacePts[pacePts.length - 1].y, r: '4.5', fill: '#fff', stroke: '#2563eb', 'stroke-width': '2.5' });
+    addEl(svg, 'circle', { cx: pacePts[pacePts.length - 1].x, cy: pacePts[pacePts.length - 1].y, r: '4.5', fill: 'var(--surface)', stroke: '#2563eb', 'stroke-width': '2.5' });
     addEl(svg, 'circle', { cx: hrPts[0].x, cy: hrPts[0].y, r: '3.5', fill: '#e11d48' });
-    addEl(svg, 'circle', { cx: hrPts[hrPts.length - 1].x, cy: hrPts[hrPts.length - 1].y, r: '4.5', fill: '#fff', stroke: '#e11d48', 'stroke-width': '2.5' });
+    addEl(svg, 'circle', { cx: hrPts[hrPts.length - 1].x, cy: hrPts[hrPts.length - 1].y, r: '4.5', fill: 'var(--surface)', stroke: '#e11d48', 'stroke-width': '2.5' });
 
     // X-axis Milestone Labels
     var step = Math.floor(monthlyList.length / 5);
@@ -326,7 +326,7 @@
       var lbl = addEl(svg, 'text', {
         x: xPos, y: padT + chartH + 18,
         'text-anchor': k === 0 ? 'start' : (k + step >= monthlyList.length ? 'end' : 'middle'),
-        fill: '#62656b', 'font-family': 'var(--sans, sans-serif)', 'font-size': '11px', 'font-weight': '450'
+        fill: 'var(--ink-3)', 'font-family': 'var(--sans, sans-serif)', 'font-size': '11px', 'font-weight': '450'
       });
       lbl.textContent = xLabel;
     }

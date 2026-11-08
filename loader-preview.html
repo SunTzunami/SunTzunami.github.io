@@ -4,7 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Geometric Runner Loader Preview</title>
-  <link rel="stylesheet" href="style.css?v=4">
+  <script>
+  document.documentElement.classList.add("js");
+  (function() {
+    function getAutoTimeTheme() {
+      var hour = new Date().getHours();
+      return (hour >= 6 && hour < 18) ? 'light' : 'dark';
+    }
+    try {
+      var stored = localStorage.getItem("theme");
+      var initial = (stored === "dark" || stored === "light") ? stored : getAutoTimeTheme();
+      document.documentElement.setAttribute("data-theme", initial);
+    } catch (e) {
+      document.documentElement.setAttribute("data-theme", getAutoTimeTheme());
+    }
+  })();
+  </script>
+  <link rel="stylesheet" href="style.css?v=7">
   <style>
     body {
       margin: 0;

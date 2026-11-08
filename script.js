@@ -36,6 +36,56 @@
     }
   }
 
+  /* ---------- Theme Toggle (Day / Night / Manual Override) ---------- */
+  function getAutoTimeTheme() {
+    var hour = new Date().getHours();
+    return (hour >= 6 && hour < 18) ? 'light' : 'dark';
+  }
+
+  function getActiveTheme() {
+    return doc.documentElement.getAttribute('data-theme') || getAutoTimeTheme();
+  }
+
+  function updateThemeToggleLabels() {
+    var isDark = getActiveTheme() === 'dark';
+    var btns = doc.querySelectorAll('.theme-toggle');
+    btns.forEach(function (btn) {
+      var label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('title', label);
+    });
+  }
+
+  function setTheme(theme) {
+    var t = (theme === 'dark') ? 'dark' : 'light';
+    doc.documentElement.setAttribute('data-theme', t);
+    try {
+      localStorage.setItem('theme', t);
+    } catch (e) {}
+    var meta = doc.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', t === 'dark' ? '#141517' : '#f1f1ee');
+    updateThemeToggleLabels();
+    if (typeof window.motiReactToTheme === 'function') {
+      window.motiReactToTheme();
+    }
+  }
+
+  window.toggleTheme = function () {
+    var current = getActiveTheme();
+    var next = (current === 'dark') ? 'light' : 'dark';
+    setTheme(next);
+  };
+
+  doc.addEventListener('click', function (e) {
+    var btn = e.target.closest('.theme-toggle');
+    if (!btn) return;
+    if (btn.hasAttribute('onclick')) return;
+    e.preventDefault();
+    window.toggleTheme();
+  });
+
+  updateThemeToggleLabels();
+
   /* ---------- The dog ---------- */
   var svg = doc.querySelector('.dog');
   if (!svg) return;
@@ -187,6 +237,20 @@
       });
     }
   }
+
+  /* React happily to theme toggle: glance up-right towards button, double-blink & wag */
+  window.motiReactToTheme = function () {
+    if (reduce || !svg) return;
+    var now = performance.now();
+    forced = { gx: 0.85, gy: -0.15, until: now + 1200 };
+    wagUntil = now + 1400;
+    blinkUntil = now + 160;
+    request();
+    setTimeout(function () {
+      blinkUntil = performance.now() + 150;
+      request();
+    }, 280);
+  };
 
   render(now0, 0);
   request();

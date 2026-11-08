@@ -11,6 +11,16 @@
   var currentIndex = -1;
   var modalEl = null;
   var backdropEl = null;
+  var previouslyFocusedEl = null;
+
+  function getFocusableElements(container) {
+    if (!container) return [];
+    var selectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    var els = Array.prototype.slice.call(container.querySelectorAll(selectors));
+    return els.filter(function (el) {
+      return !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true' && el.offsetParent !== null;
+    });
+  }
 
   var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var MONTHS = [
@@ -159,6 +169,25 @@
         if (currentIndex > 0) showRunAtIndex(currentIndex - 1);
       } else if (e.key === 'ArrowRight') {
         if (currentIndex < currentRunList.length - 1) showRunAtIndex(currentIndex + 1);
+      } else if (e.key === 'Tab') {
+        var focusables = getFocusableElements(modalEl);
+        if (focusables.length === 0) {
+          e.preventDefault();
+          return;
+        }
+        var firstEl = focusables[0];
+        var lastEl = focusables[focusables.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === firstEl || !modalEl.contains(document.activeElement)) {
+            e.preventDefault();
+            lastEl.focus();
+          }
+        } else {
+          if (document.activeElement === lastEl || !modalEl.contains(document.activeElement)) {
+            e.preventDefault();
+            firstEl.focus();
+          }
+        }
       }
     });
   }
@@ -307,9 +336,17 @@
     }
 
     // Activate modal
+    if (!modalEl.classList.contains('active')) {
+      previouslyFocusedEl = document.activeElement;
+    }
     backdropEl.classList.add('active');
     modalEl.classList.add('active');
     document.body.classList.add('modal-open');
+
+    var closeBtn = document.getElementById('run-m-close');
+    if (closeBtn && document.activeElement !== closeBtn && !modalEl.contains(document.activeElement)) {
+      closeBtn.focus();
+    }
   }
 
   function openRunModal(runData, list) {
@@ -329,6 +366,13 @@
     if (backdropEl) backdropEl.classList.remove('active');
     if (modalEl) modalEl.classList.remove('active');
     document.body.classList.remove('modal-open');
+
+    if (previouslyFocusedEl && typeof previouslyFocusedEl.focus === 'function') {
+      try {
+        previouslyFocusedEl.focus();
+      } catch (err) {}
+      previouslyFocusedEl = null;
+    }
   }
 
   // Expose global methods

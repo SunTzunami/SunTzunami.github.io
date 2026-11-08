@@ -20,9 +20,43 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/newsreader-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <script>document.documentElement.classList.add("js")</script>
-  <link rel="stylesheet" href="style.css?v=4">
-  <script src="script.js" defer></script>
+  <script>
+  document.documentElement.classList.add("js");
+  (function() {
+    function getAutoTimeTheme() {
+      var hour = new Date().getHours();
+      return (hour >= 6 && hour < 18) ? 'light' : 'dark';
+    }
+    window.toggleTheme = function() {
+      var cur = document.documentElement.getAttribute("data-theme") || getAutoTimeTheme();
+      var next = (cur === "dark") ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("theme", next); } catch (e) {}
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', next === 'dark' ? '#141517' : '#f1f1ee');
+      var btns = document.querySelectorAll(".theme-toggle");
+      btns.forEach(function(b) {
+        var lbl = (next === "dark") ? "Switch to light theme" : "Switch to dark theme";
+        b.setAttribute("aria-label", lbl);
+        b.setAttribute("title", lbl);
+      });
+      if (typeof window.motiReactToTheme === "function") {
+        window.motiReactToTheme();
+      }
+    };
+    try {
+      var stored = localStorage.getItem("theme");
+      var initial = (stored === "dark" || stored === "light") ? stored : getAutoTimeTheme();
+      document.documentElement.setAttribute("data-theme", initial);
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', initial === 'dark' ? '#141517' : '#f1f1ee');
+    } catch (e) {
+      document.documentElement.setAttribute("data-theme", getAutoTimeTheme());
+    }
+  })();
+  </script>
+  <link rel="stylesheet" href="style.css?v=7">
+  <script src="script.js?v=7" defer></script>
 <script src="route-bg.js?v=5" defer></script>
 </head>
 
@@ -98,7 +132,6 @@
           </g>
         </svg>
       </a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
       <div class="nav-links" id="nav-links">
         <a href="index.html">Home</a>
         <a href="projects.html">Projects</a>
@@ -106,6 +139,13 @@
         <a href="lab_log.html" aria-current="page">Lab Log</a>
         <a href="personal.html">Personal</a>
         <a href="SwamiSajagCV2026.pdf">CV</a>
+      </div>
+      <div class="nav-controls">
+        <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
       </div>
     </nav>
   </header>

@@ -6,6 +6,16 @@
   var modalBackdrop = null;
   var modalBody = null;
   var modalCloseBtn = null;
+  var previouslyFocusedEl = null;
+
+  function getFocusableElements(container) {
+    if (!container) return [];
+    var selectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    var els = Array.prototype.slice.call(container.querySelectorAll(selectors));
+    return els.filter(function (el) {
+      return !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true' && el.offsetParent !== null;
+    });
+  }
 
   function createModal() {
     if (document.getElementById('reading-modal')) return;
@@ -39,8 +49,28 @@
     modalBackdrop.addEventListener('click', closeModal);
 
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && modal.classList.contains('active')) {
+      if (!modal || !modal.classList.contains('active')) return;
+      if (e.key === 'Escape') {
         closeModal();
+      } else if (e.key === 'Tab') {
+        var focusables = getFocusableElements(modal);
+        if (focusables.length === 0) {
+          e.preventDefault();
+          return;
+        }
+        var firstEl = focusables[0];
+        var lastEl = focusables[focusables.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === firstEl || !modal.contains(document.activeElement)) {
+            e.preventDefault();
+            lastEl.focus();
+          }
+        } else {
+          if (document.activeElement === lastEl || !modal.contains(document.activeElement)) {
+            e.preventDefault();
+            firstEl.focus();
+          }
+        }
       }
     });
   }
@@ -51,6 +81,8 @@
 
     var fullContent = articleEl.querySelector('.full-content');
     if (!fullContent) return;
+
+    previouslyFocusedEl = document.activeElement;
 
     // Clone content so original DOM remains untouched
     modalBody.innerHTML = fullContent.innerHTML;
@@ -72,6 +104,13 @@
     modalBackdrop.classList.remove('active');
     modal.classList.remove('active');
     document.body.classList.remove('modal-open');
+
+    if (previouslyFocusedEl && typeof previouslyFocusedEl.focus === 'function') {
+      try {
+        previouslyFocusedEl.focus();
+      } catch (err) {}
+      previouslyFocusedEl = null;
+    }
   }
 
   function init() {
