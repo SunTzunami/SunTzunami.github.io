@@ -110,10 +110,6 @@
   function init() {
     initLoader();
 
-    if (window.matchMedia('(max-width: 720px)').matches) {
-      dismissLoader();
-      return;
-    }
     if (document.body && document.body.getAttribute('data-page') === 'moti') {
       dismissLoader();
       return;
@@ -156,7 +152,7 @@
             var vw = window.innerWidth;
             var vh = window.innerHeight;
             var aspect = vw / vh;
-            var cols = Math.max(12, Math.round(Math.sqrt(runs.length * aspect * 1.05)));
+            var cols = Math.max(8, Math.round(Math.sqrt(runs.length * aspect * 1.05)));
             container.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
           });
         }

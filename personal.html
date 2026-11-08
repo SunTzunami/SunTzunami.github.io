@@ -344,12 +344,31 @@
       var isTreadmill = latestGrid.path.indexOf('A 26 26') !== -1;
       if (isTreadmill) {
         var svgWrap = pathEl.parentNode;
-        svgWrap.innerHTML = '<circle cx="56" cy="22" r="7.5" fill="' + (latestGrid.color || 'var(--dog)') + '"/><path d="M52 30 L45 52 L32 66 L24 82 M45 52 L62 63 L74 80 M35 42 L48 35 L64 39" fill="none" stroke="' + (latestGrid.color || 'var(--dog)') + '" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>';
+        if (svgWrap && window.buildKaomojiSvg) {
+          svgWrap.innerHTML = window.buildKaomojiSvg(latestGrid.color);
+        }
       } else {
         pathEl.setAttribute('d', latestGrid.path);
         if (latestGrid.color) {
           pathEl.style.stroke = latestGrid.color;
           pathEl.style.filter = 'drop-shadow(0 4px 12px ' + latestGrid.color + '55)';
+        }
+        if (typeof pathEl.getTotalLength === 'function') {
+          try {
+            var len = pathEl.getTotalLength();
+            if (len > 0) {
+              pathEl.style.strokeDasharray = len;
+              pathEl.style.strokeDashoffset = len;
+              var spd = (latestGrid.spd && latestGrid.spd > 0) ? latestGrid.spd : 10.5;
+              var dur = Math.max(0.7, Math.min(3.0, 18 / spd));
+              if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                dur = 0;
+              }
+              pathEl.getBoundingClientRect();
+              pathEl.style.transition = 'stroke-dashoffset ' + dur.toFixed(2) + 's cubic-bezier(0.25, 1, 0.5, 1)';
+              pathEl.style.strokeDashoffset = '0';
+            }
+          } catch (e) {}
         }
       }
     }

@@ -163,6 +163,37 @@
     });
   }
 
+  // Kaomoji glyph outlines (Canadian Syllabics ᕕ( ᐛ )ᕗ)
+  var KAOMOJI = {
+    v1: 'M422 135Q472 135 501.0 165.5Q530 196 530 230Q530 274 497.0 307.0Q464 340 420 340Q370 340 340.0 317.0Q310 294 310 230Q310 182 340.0 158.5Q370 135 422 135ZM191 457 586 1493H815L1384 0H1174L700 1294L410 496Q536 488 615.5 410.0Q695 332 695 230Q695 115 611.5 42.5Q528 -30 422 -30Q326 -31 238.0 47.0Q150 125 150 230Q150 351 191 457Z',
+    pl: 'M635 1554Q501 1324 436.0 1099.0Q371 874 371 643Q371 412 436.5 185.5Q502 -41 635 -270H475Q325 -35 250.5 192.0Q176 419 176 643Q176 866 250.0 1092.0Q324 1318 475 1554Z',
+    fc: 'M217 1547H421V1342H217ZM715 1871H919V1666H715ZM1204 1218 273 746 1204 272ZM1374 0 119 632V860L1374 1493Z',
+    pr: 'M164 1554H324Q474 1318 548.5 1092.0Q623 866 623 643Q623 419 548.5 192.0Q474 -35 324 -270H164Q297 -41 362.5 185.5Q428 412 428 643Q428 874 362.5 1099.0Q297 1324 164 1554Z',
+    v2: 'M349 989Q399 989 428.0 1019.5Q457 1050 457 1084Q457 1128 424.0 1161.0Q391 1194 347 1194Q297 1194 267.0 1171.0Q237 1148 237 1084Q237 1036 267.0 1012.5Q297 989 349 989ZM621 1048Q609 951 527.0 887.5Q445 824 349 824Q240 824 158.5 904.5Q77 985 77 1084Q77 1226 164.0 1290.5Q251 1355 322 1355Q387 1355 461 1318L1368 860V632L113 0V182L1214 746Z'
+  };
+
+  function buildKaomojiSvg(color) {
+    var c = color || 'var(--dog)';
+    var shadow = (color && color.indexOf('#') === 0) ? (color + '66') : 'rgba(181, 119, 31, 0.4)';
+    return '<g class="run-m-kaomoji" role="img" aria-label="ᕕ( ᐛ )ᕗ" transform="translate(8, 59) scale(0.0116, -0.0116)" fill="' + c + '" style="filter:drop-shadow(0 4px 12px ' + shadow + ');">' +
+      '<title>ᕕ( ᐛ )ᕗ</title>' +
+      '<g class="runner-pose-a">' +
+      '<path class="kaomoji-glyph" d="' + KAOMOJI.v1 + '" style="fill:' + c + '; stroke:none;" />' +
+      '<path class="kaomoji-glyph" d="' + KAOMOJI.pl + '" transform="translate(1401, 0)" style="fill:' + c + '; stroke:none;" />' +
+      '<path class="kaomoji-glyph" d="' + KAOMOJI.fc + '" transform="translate(2851, 0)" style="fill:' + c + '; stroke:none;" />' +
+      '<path class="kaomoji-glyph" d="' + KAOMOJI.pr + '" transform="translate(5077, 0)" style="fill:' + c + '; stroke:none;" />' +
+      '<path class="kaomoji-glyph" d="' + KAOMOJI.v2 + '" transform="translate(5876, 0)" style="fill:' + c + '; stroke:none;" />' +
+      '</g>' +
+      '<g class="runner-pose-b">' +
+      '<path class="kaomoji-glyph" d="' + KAOMOJI.v2 + '" style="fill:' + c + '; stroke:none;" />' +
+      '<path class="kaomoji-glyph" d="' + KAOMOJI.pl + '" transform="translate(1487, 0)" style="fill:' + c + '; stroke:none;" />' +
+      '<path class="kaomoji-glyph" d="' + KAOMOJI.fc + '" transform="translate(2937, 0)" style="fill:' + c + '; stroke:none;" />' +
+      '<path class="kaomoji-glyph" d="' + KAOMOJI.pr + '" transform="translate(5163, 0)" style="fill:' + c + '; stroke:none;" />' +
+      '<path class="kaomoji-glyph" d="' + KAOMOJI.v1 + '" transform="translate(5962, 0)" style="fill:' + c + '; stroke:none;" />' +
+      '</g>' +
+      '</g>';
+  }
+
   function showRunAtIndex(idx) {
     if (!currentRunList || idx < 0 || idx >= currentRunList.length) return;
     currentIndex = idx;
@@ -200,12 +231,41 @@
 
     // Populate Route Path
     var svgWrap = document.getElementById('run-m-svg');
-    var pathEl = document.getElementById('run-m-path');
-    if (svgWrap && pathEl) {
+    if (svgWrap) {
       if (isTreadmill) {
-        svgWrap.innerHTML = '<circle cx="56" cy="22" r="7.5" fill="' + (r.color || 'var(--dog)') + '"/><path d="M52 30 L45 52 L32 66 L24 82 M45 52 L62 63 L74 80 M35 42 L48 35 L64 39" fill="none" stroke="' + (r.color || 'var(--dog)') + '" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 4px 12px ' + (r.color || '#b5771f') + '66)"/>';
+        svgWrap.innerHTML = buildKaomojiSvg(r.color);
+        svgWrap.onclick = null;
+        svgWrap.removeAttribute('title');
+        svgWrap.style.cursor = 'default';
       } else {
         svgWrap.innerHTML = '<path id="run-m-path" d="' + (r.path || '') + '" style="stroke:' + (r.color || 'var(--dog)') + '; filter:drop-shadow(0 4px 12px ' + (r.color || '#b5771f') + '66);"/>';
+        var animateTrace = function () {
+          var pathEl = svgWrap.querySelector('#run-m-path');
+          if (pathEl && typeof pathEl.getTotalLength === 'function') {
+            try {
+              var len = pathEl.getTotalLength();
+              if (len > 0) {
+                pathEl.style.transition = 'none';
+                pathEl.style.strokeDasharray = len;
+                pathEl.style.strokeDashoffset = len;
+                var spd = (r.spd && r.spd > 0) ? r.spd : 10.5;
+                // Trace duration inversely proportional to speed:
+                // Fast pace (15 km/h) -> ~1.2s; Easy jog (8.5 km/h) -> ~2.4s
+                var dur = Math.max(0.7, Math.min(3.0, 18 / spd));
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                  dur = 0;
+                }
+                pathEl.getBoundingClientRect(); // force layout reflow
+                pathEl.style.transition = 'stroke-dashoffset ' + dur.toFixed(2) + 's cubic-bezier(0.25, 1, 0.5, 1)';
+                pathEl.style.strokeDashoffset = '0';
+              }
+            } catch (e) {}
+          }
+        };
+        animateTrace();
+        svgWrap.style.cursor = 'pointer';
+        svgWrap.setAttribute('title', 'Click to replay route trace');
+        svgWrap.onclick = animateTrace;
       }
     }
 
@@ -274,5 +334,6 @@
   // Expose global methods
   window.openRunDetail = openRunModal;
   window.closeRunDetail = closeModal;
+  window.buildKaomojiSvg = buildKaomojiSvg;
 })();
 

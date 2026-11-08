@@ -522,6 +522,10 @@
       });
   }
 
+  function buildGridKaomojiSvg(color) {
+    return window.buildKaomojiSvg ? window.buildKaomojiSvg(color) : '';
+  }
+
   // Showcase Grid in Personal Page
   function initPersonalRunningGrid() {
     var container = document.getElementById('personal-grid-container');
@@ -557,8 +561,7 @@
 
           if (isTreadmill) {
             tile.classList.add('treadmill-tile');
-            // Clean vector runner figure for treadmill sessions
-            svg.innerHTML = '<circle cx="56" cy="22" r="7.5" fill="currentColor"/><path d="M52 30 L45 52 L32 66 L24 82 M45 52 L62 63 L74 80 M35 42 L48 35 L64 39" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>';
+            svg.innerHTML = buildGridKaomojiSvg(runColor);
           } else if (r.path) {
             var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             path.setAttribute('d', r.path);
@@ -571,6 +574,30 @@
             var rect = tile.getBoundingClientRect();
             tile.style.borderColor = runColor;
             tile.style.boxShadow = '0 6px 16px ' + runColor + '55';
+
+            // Speed-contingent route trace on hover
+            if (!isTreadmill) {
+              var pathEl = svg.querySelector('path');
+              if (pathEl && typeof pathEl.getTotalLength === 'function') {
+                try {
+                  var len = pathEl.getTotalLength();
+                  if (len > 0) {
+                    pathEl.style.transition = 'none';
+                    pathEl.style.strokeDasharray = len;
+                    pathEl.style.strokeDashoffset = len;
+                    pathEl.getBoundingClientRect();
+                    var spd = (r.spd && r.spd > 0) ? r.spd : 10.5;
+                    var dur = Math.max(0.4, Math.min(1.4, 10 / spd));
+                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                      dur = 0;
+                    }
+                    pathEl.style.transition = 'stroke-dashoffset ' + dur.toFixed(2) + 's cubic-bezier(0.25, 1, 0.5, 1)';
+                    pathEl.style.strokeDashoffset = '0';
+                  }
+                } catch (e) {}
+              }
+            }
+
             var locLabel = isTreadmill ? 'Treadmill Run' : r.loc;
             tooltip.innerHTML = '<strong>' + r.date + ' (' + r.time + ')' + (isTreadmill ? ' - Treadmill' : '') + '</strong><br>' +
               r.dist + ' km · <span style="color:' + runColor + '; font-weight:600;">' + r.pace + '/km (' + (r.spd ? r.spd + ' km/h' : '') + ')</span><br>' +
