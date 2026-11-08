@@ -1,0 +1,207 @@
+name: Fetch Garmin Activities
+
+on:
+  schedule:
+    # Runs every day at 06:00 UTC (15:00 JST)
+    - cron: "0 6 * * *"
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install fitparse
+        run: pip install fitparse
+
+      - name: Fetch Garmin activities
+        env:
+          GARMIN_API_KEY: ${{ secrets.GARMIN_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          # 1. Get bearer token
+          TOKEN=$(curl -sf -X POST \
+            'https://personal.connectapi.garmin.com/personalapitoken-service/personal-api/personal-api-key/token' \
+            -H "Authorization: ApiKey ${GARMIN_API_KEY}" )
+
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Failed to obtain Garmin bearer token"
+            exit 1
+          fi
+
+          # 2. Fetch last 10 running activities
+          curl -sf -X GET \
+            'https://personal.connectapi.garmin.com/activitylist-service/activities/search/activities?start=0&limit=10&activityType=running' \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -o garmin-activities-raw.json
+
+          # 3. Download FIT file for the latest activity to extract GPS route
+          ACTIVITY_ID=$(python3 -c "import json; data=json.load(open('garmin-activities-raw.json')); print(data[0]['activityId'])")
+          echo "Latest activity ID: ${ACTIVITY_ID}"
+
+          curl -sf -X GET \
+            "https://personal.connectapi.garmin.com/download-service/files/activity/${ACTIVITY_ID}" \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -o activity_download.zip
+
+          # Extract FIT file
+          unzip -o activity_download.zip -d fit_temp/
+
+          # 4. Transform into lightweight JSON for the site
+          python3 - <<'PYEOF'
+          import json, sys, glob
+          from datetime import datetime
+
+          # ---- Parse activities list ----
+          with open("garmin-activities-raw.json") as f:
+              raw = json.load(f)
+
+          activities = []
+          for a in raw:
+              activity = {
+                  "id": a.get("activityId"),
+                  "name": a.get("activityName", "Untitled"),
+                  "type": a.get("activityType", {}).get("typeKey", "unknown"),
+                  "date": a.get("startTimeLocal", ""),
+                  "distance_km": round(a.get("distance", 0) / 1000, 2) if a.get("distance") else 0,
+                  "duration_min": round(a.get("duration", 0) / 60, 1) if a.get("duration") else 0,
+                  "avg_hr": a.get("averageHR", None),
+                  "max_hr": a.get("maxHR", None),
+                  "calories": a.get("calories", None),
+                  "avg_pace_min_km": None,
+                  "elevation_gain_m": round(a.get("elevationGain", 0), 0) if a.get("elevationGain") else None,
+                  "location": a.get("locationName", "Setagaya Ward"),
+              }
+
+              if activity["distance_km"] and activity["duration_min"]:
+                  pace = activity["duration_min"] / activity["distance_km"]
+                  activity["avg_pace_min_km"] = round(pace, 2)
+
+              # Only include runs run at 7:30 min/km or faster
+              if activity["avg_pace_min_km"] and activity["avg_pace_min_km"] > 7.5:
+                  continue
+
+              type_labels = {
+                  "running": "Run",
+                  "trail_running": "Trail Run",
+                  "treadmill_running": "Treadmill",
+              }
+              activity["typeLabel"] = type_labels.get(activity["type"], "Run")
+              activities.append(activity)
+
+          # ---- Parse GPS route from FIT file ----
+          route = []
+          try:
+              from fitparse import FitFile
+              fit_files = glob.glob("fit_temp/*.fit")
+              if fit_files:
+                  fitfile = FitFile(fit_files[0])
+                  all_coords = []
+                  for record in fitfile.get_messages("record"):
+                      lat = lon = None
+                      for field in record.fields:
+                          if field.name == "position_lat" and field.value is not None:
+                              lat = field.value * (180.0 / 2**31)
+                          if field.name == "position_long" and field.value is not None:
+                              lon = field.value * (180.0 / 2**31)
+                      if lat and lon:
+                          all_coords.append([round(lat, 6), round(lon, 6)])
+
+                  # Simplify to ~120 points for a lightweight polyline
+                  if len(all_coords) > 120:
+                      step = max(1, len(all_coords) // 120)
+                      route = [all_coords[0]] + all_coords[step::step] + [all_coords[-1]]
+                  else:
+                      route = all_coords
+                  print(f"Extracted {len(all_coords)} GPS points, simplified to {len(route)}")
+          except Exception as e:
+              print(f"Warning: Could not parse FIT GPS data: {e}", file=sys.stderr)
+
+          # Load existing data to preserve historical summary, yearly, and timeseries stats
+          try:
+              with open("garmin-activities.json") as f:
+                  existing = json.load(f)
+          except Exception:
+              existing = {}
+
+          existing_summary = existing.get("summary", {})
+          existing_acts = existing.get("activities", [])
+          existing_ids = {a.get("id") or a.get("date") for a in existing_acts}
+
+          # Update summary if new qualifying activities arrived
+          for act in activities:
+              act_key = act.get("id") or act.get("date")
+              if act_key and act_key not in existing_ids:
+                  dist = act.get("distance_km", 0)
+                  dur = act.get("duration_min", 0)
+                  existing_summary["total_distance_km"] = round(existing_summary.get("total_distance_km", 0) + dist, 1)
+                  existing_summary["total_runs"] = existing_summary.get("total_runs", 0) + 1
+                  existing_summary["total_duration_hours"] = round(existing_summary.get("total_duration_hours", 0) + dur / 60, 1)
+
+          output = {
+              "updated": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "summary": existing_summary,
+              "yearly": existing.get("yearly", {}),
+              "monthly": existing.get("monthly", []),
+              "weekly_trend": existing.get("weekly_trend", []),
+              "timeseries": existing.get("timeseries", {}),
+              "activities": activities,
+          }
+
+          with open("garmin-activities.json", "w") as f:
+              json.dump(output, f, indent=2)
+
+          # Update runs-2026-grid.json if new run has GPS coordinates
+          try:
+              with open("runs-2026-grid.json") as gf:
+                  grid = json.load(gf)
+              if activities and route:
+                  latest_act = activities[0]
+                  if not any(g.get("id") == latest_act.get("id") for g in grid):
+                      import math
+                      mean_lat = sum(c[0] for c in route) / len(route)
+                      cos_lat = math.cos(math.radians(mean_lat))
+                      pts = [(c[1] * cos_lat, c[0]) for c in route]
+                      min_x, max_x = min(p[0] for p in pts), max(p[0] for p in pts)
+                      min_y, max_y = min(p[1] for p in pts), max(p[1] for p in pts)
+                      span_x = max_x - min_x or 1e-6
+                      span_y = max_y - min_y or 1e-6
+                      scale = min(80 / span_x, 80 / span_y)
+                      ox, oy = (100 - span_x * scale) / 2, (100 - span_y * scale) / 2
+                      cmds = [f"{'M' if i==0 else 'L'}{round(ox + (x - min_x) * scale, 1)} {round(100 - (oy + (y - min_y) * scale), 1)}" for i, (x, y) in enumerate(pts)]
+                      pm = int(latest_act.get("avg_pace_min_km", 0))
+                      ps = int(round((latest_act.get("avg_pace_min_km", 0) % 1) * 60))
+                      grid.append({
+                          "id": latest_act.get("id"),
+                          "date": latest_act.get("date")[:10],
+                          "time": latest_act.get("date")[11:16],
+                          "dist": latest_act.get("distance_km"),
+                          "dur": latest_act.get("duration_min"),
+                          "pace": f"{pm}:{ps:02d}",
+                          "hr": latest_act.get("avg_hr"),
+                          "loc": latest_act.get("location") or latest_act.get("locationName", "Setagaya Ward"),
+                          "path": " ".join(cmds)
+                      })
+                      with open("runs-2026-grid.json", "w") as gf:
+                          json.dump(grid, gf)
+          except Exception as e:
+              print(f"Note: grid sync skipped: {e}")
+
+          print(f"Wrote {len(activities)} running activities")
+          PYEOF
+
+          rm -rf garmin-activities-raw.json activity_download.zip fit_temp/
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add garmin-activities.json runs-2026-grid.json
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "chore: update Garmin activities & route grid [skip ci]"
+          git push
