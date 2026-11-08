@@ -59,7 +59,6 @@ In the top-left header of every page sits **Moti**, an interactive SVG companion
 ├── lab_log.html          # Research log, engineering notes, and working hypotheses
 ├── personal.html         # Outside the lab: muses (Kobe, Marcus Aurelius, MJ), sports & books
 ├── moti.html             # In memoriam page for Moti (मोती)
-├── eyeread.html          # Deep-dive case study: Insho 印章 hands-free reading interface
 ├── 404.html              # Custom 404 error page (featuring Moti)
 ├── SwamiSajagCV2026.pdf  # Curriculum Vitae
 ├── style.css             # Unified design system, CSS custom properties, and responsive layouts
