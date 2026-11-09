@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-08T02:51:16Z",
+  "updated": "2026-11-09T15:17:10Z",
   "summary": {
-    "total_distance_km": 4394.8,
-    "total_runs": 918,
-    "total_duration_hours": 453.9,
+    "total_distance_km": 4399.9,
+    "total_runs": 919,
+    "total_duration_hours": 454.4,
     "since_date": "2024-01-03",
     "current_vo2max": 57.1,
     "current_rhr": 44.6
@@ -4570,6 +4570,21 @@
   },
   "activities": [
     {
+      "id": 25018208137,
+      "name": "Setagaya Ward Running",
+      "type": "running",
+      "date": "2026-11-09 18:42:24",
+      "distance_km": 5.06,
+      "duration_min": 28.3,
+      "avg_hr": 137.0,
+      "max_hr": 152.0,
+      "calories": 314.0,
+      "avg_pace_min_km": 5.59,
+      "elevation_gain_m": 15.0,
+      "location": "Setagaya Ward",
+      "typeLabel": "Run"
+    },
+    {
       "id": 25003110033,
       "name": "Setagaya Ward Running",
       "type": "running",
@@ -4581,22 +4596,11 @@
       "calories": 350.0,
       "avg_pace_min_km": 5.58,
       "elevation_gain_m": 25.0,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24981343372,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-11-08 08:09:53",
-      "distance_km": 5.52,
-      "duration_min": 30.8,
-      "avg_hr": 140.0,
-      "calories": 350.0,
-      "avg_pace_min_km": 5.58,
-      "elevation_gain_m": 25.0,
+      "location": "Setagaya Ward",
       "typeLabel": "Run"
     },
     {
+      "id": 24981343372,
       "name": "Setagaya Ward Running",
       "type": "running",
       "date": "2026-11-06 08:14:23",
@@ -4607,7 +4611,8 @@
       "calories": 187.0,
       "avg_pace_min_km": 5.51,
       "elevation_gain_m": 8.0,
-      "location": "Setagaya Ward"
+      "location": "Setagaya Ward",
+      "typeLabel": "Run"
     },
     {
       "id": 24974147362,
@@ -4621,7 +4626,8 @@
       "calories": 322.0,
       "avg_pace_min_km": 5.7,
       "elevation_gain_m": 17.0,
-      "location": "Setagaya Ward"
+      "location": "Setagaya Ward",
+      "typeLabel": "Run"
     },
     {
       "id": 24957490851,
@@ -4635,7 +4641,8 @@
       "calories": 316.0,
       "avg_pace_min_km": 5.76,
       "elevation_gain_m": 18.0,
-      "location": "Setagaya Ward"
+      "location": "Setagaya Ward",
+      "typeLabel": "Run"
     },
     {
       "id": 24945360122,
@@ -4649,7 +4656,8 @@
       "calories": 323.0,
       "avg_pace_min_km": 5.8,
       "elevation_gain_m": 13.0,
-      "location": "Setagaya Ward"
+      "location": "Setagaya Ward",
+      "typeLabel": "Run"
     },
     {
       "id": 24933966554,
@@ -4663,7 +4671,8 @@
       "calories": 184.0,
       "avg_pace_min_km": 5.76,
       "elevation_gain_m": 10.0,
-      "location": "Setagaya Ward"
+      "location": "Setagaya Ward",
+      "typeLabel": "Run"
     },
     {
       "id": 24922536209,
@@ -4677,7 +4686,8 @@
       "calories": 305.0,
       "avg_pace_min_km": 5.63,
       "elevation_gain_m": 17.0,
-      "location": "Setagaya Ward"
+      "location": "Setagaya Ward",
+      "typeLabel": "Run"
     },
     {
       "id": 24911786239,
@@ -4691,7 +4701,8 @@
       "calories": 331.0,
       "avg_pace_min_km": 5.67,
       "elevation_gain_m": 16.0,
-      "location": "Setagaya Ward"
+      "location": "Setagaya Ward",
+      "typeLabel": "Run"
     },
     {
       "id": 24900952199,
@@ -4705,161 +4716,8 @@
       "calories": 334.0,
       "avg_pace_min_km": 5.63,
       "elevation_gain_m": 13.0,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24887483737,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-10-29 07:53:04",
-      "distance_km": 2.69,
-      "duration_min": 14.0,
-      "avg_hr": 145.0,
-      "max_hr": 159.0,
-      "calories": 170.0,
-      "avg_pace_min_km": 5.2,
-      "elevation_gain_m": 9.0,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24876862948,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-10-28 07:26:58",
-      "distance_km": 5.14,
-      "duration_min": 26.9,
-      "avg_hr": 148.0,
-      "max_hr": 167.0,
-      "calories": 324.0,
-      "avg_pace_min_km": 5.23,
-      "elevation_gain_m": 19.0,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24863513929,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-10-27 08:24:43",
-      "distance_km": 3.07,
-      "duration_min": 16.6,
-      "avg_hr": 142.0,
-      "max_hr": 158.0,
-      "calories": 192.0,
-      "avg_pace_min_km": 5.41,
-      "elevation_gain_m": 12.0,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24856568781,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-10-26 20:10:34",
-      "distance_km": 2.69,
-      "duration_min": 13.3,
-      "avg_hr": 154.0,
-      "max_hr": 178.0,
-      "calories": 168.0,
-      "avg_pace_min_km": 4.94,
-      "elevation_gain_m": 10.0,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24831230193,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-10-24 08:18:57",
-      "distance_km": 5.17,
-      "duration_min": 29.9,
-      "avg_hr": 138.0,
-      "max_hr": 153.0,
-      "calories": 327.0,
-      "avg_pace_min_km": 5.78,
-      "elevation_gain_m": 14.0,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24820726604,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-10-23 07:37:37",
-      "distance_km": 2.69,
-      "duration_min": 14.9,
-      "avg_hr": 133.0,
-      "max_hr": 152.0,
-      "calories": 163.0,
-      "avg_pace_min_km": 5.54,
-      "elevation_gain_m": 9.0,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24808475748,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-10-22 07:27:30",
-      "distance_km": 5.15,
-      "duration_min": 28.6,
-      "avg_hr": 144.0,
-      "max_hr": 158.0,
-      "calories": 327.0,
-      "avg_pace_min_km": 5.55,
-      "elevation_gain_m": 26.0,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24796804477,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-10-21 07:31:15",
-      "distance_km": 5.13,
-      "duration_min": 26.9,
-      "avg_hr": 150.0,
-      "max_hr": 166.0,
-      "calories": 324.0,
-      "avg_pace_min_km": 5.24,
-      "elevation_gain_m": 15.0,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24777199210,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-10-19 20:04:44",
-      "distance_km": 0.69,
-      "duration_min": 4.3,
-      "avg_hr": 139.0,
-      "max_hr": 158.0,
-      "calories": 45.0,
-      "avg_pace_min_km": 6.23,
-      "elevation_gain_m": null,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24776713828,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-10-19 18:49:36",
-      "distance_km": 5.14,
-      "duration_min": 30.5,
-      "avg_hr": 137.0,
-      "max_hr": 152.0,
-      "calories": 322.0,
-      "avg_pace_min_km": 5.93,
-      "elevation_gain_m": 19.0,
-      "location": "Setagaya Ward"
-    },
-    {
-      "id": 24733223221,
-      "name": "Setagaya Ward Running",
-      "type": "running",
-      "date": "2026-10-15 21:25:56",
-      "distance_km": 5.13,
-      "duration_min": 32.0,
-      "avg_hr": 129.0,
-      "max_hr": 140.0,
-      "calories": 315.0,
-      "avg_pace_min_km": 6.24,
-      "elevation_gain_m": 19.0,
-      "location": "Setagaya Ward"
+      "location": "Setagaya Ward",
+      "typeLabel": "Run"
     }
   ]
 }
