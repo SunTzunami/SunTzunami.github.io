@@ -1,6 +1,6 @@
 # suntzunami.github.io
 
-Source code for [suntzunami.github.io](https://suntzunami.github.io), the personal website of Sajag Swami.
+Source code for [suntzunami.github.io](https://suntzunami.github.io), my personal website.
 
 Built with plain HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or external dependencies.
 
