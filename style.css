@@ -428,6 +428,20 @@ html[data-theme="dark"] .theme-toggle .theme-icon-moon {
 }
 
 @media (min-width: 721px) {
+  :root,
+  html[data-theme="light"],
+  html[data-theme="dark"] {
+    --nav-h: 84px;
+  }
+
+  .navbar {
+    min-height: 84px;
+  }
+
+  .dog {
+    height: 66px;
+  }
+
   .nav-links {
     margin-left: auto;
     margin-right: 18px;
@@ -439,6 +453,14 @@ html[data-theme="dark"] .theme-toggle .theme-icon-moon {
   html[data-theme="light"],
   html[data-theme="dark"] {
     --nav-h: 68px;
+  }
+
+  .navbar {
+    min-height: 68px;
+  }
+
+  .dog {
+    height: 50px;
   }
 
   .js .nav-toggle {
