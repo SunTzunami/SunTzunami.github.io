@@ -1777,12 +1777,56 @@ body.modal-open {
   }
 }
 
+.route-bg-tile .run-m-kaomoji {
+  filter: none !important;
+  animation: route-bg-sync-fade 16s cubic-bezier(0.37, 0, 0.23, 1) infinite;
+}
+
+.route-bg-tile .run-m-kaomoji path {
+  animation: none !important;
+  stroke: none !important;
+  stroke-dasharray: none !important;
+  stroke-dashoffset: 0 !important;
+  fill: inherit !important;
+}
+
+@keyframes route-bg-sync-fade {
+  0% {
+    opacity: 0;
+  }
+
+  2% {
+    opacity: 1;
+  }
+
+  56% {
+    opacity: 1;
+  }
+
+  78% {
+    opacity: 1;
+  }
+
+  91% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .route-bg-tile path {
     animation: none;
     stroke-dasharray: none;
     stroke-dashoffset: 0;
     opacity: 1;
+  }
+
+  .route-bg-tile .run-m-kaomoji {
+    animation: none !important;
+    opacity: 1 !important;
   }
 }
 

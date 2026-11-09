@@ -39,6 +39,30 @@
       '</g>' +
     '</svg>';
 
+  function buildKaomojiSvg(color) {
+    var c = color || 'currentColor';
+    return '<g class="run-m-kaomoji" role="img" aria-label="ᕕ( ᐛ )ᕗ" transform="translate(8, 59) scale(0.0116, -0.0116)" fill="' + c + '">' +
+      '<g class="runner-pose-a">' +
+        '<path class="kaomoji-glyph" d="' + P_V1 + '" style="fill:' + c + '; stroke:none;" />' +
+        '<path class="kaomoji-glyph" d="' + P_PL + '" transform="translate(1401, 0)" style="fill:' + c + '; stroke:none;" />' +
+        '<path class="kaomoji-glyph" d="' + P_FC + '" transform="translate(2851, 0)" style="fill:' + c + '; stroke:none;" />' +
+        '<path class="kaomoji-glyph" d="' + P_PR + '" transform="translate(5077, 0)" style="fill:' + c + '; stroke:none;" />' +
+        '<path class="kaomoji-glyph" d="' + P_V2 + '" transform="translate(5876, 0)" style="fill:' + c + '; stroke:none;" />' +
+      '</g>' +
+      '<g class="runner-pose-b">' +
+        '<path class="kaomoji-glyph" d="' + P_V2 + '" style="fill:' + c + '; stroke:none;" />' +
+        '<path class="kaomoji-glyph" d="' + P_PL + '" transform="translate(1487, 0)" style="fill:' + c + '; stroke:none;" />' +
+        '<path class="kaomoji-glyph" d="' + P_FC + '" transform="translate(2937, 0)" style="fill:' + c + '; stroke:none;" />' +
+        '<path class="kaomoji-glyph" d="' + P_PR + '" transform="translate(5163, 0)" style="fill:' + c + '; stroke:none;" />' +
+        '<path class="kaomoji-glyph" d="' + P_V1 + '" transform="translate(5962, 0)" style="fill:' + c + '; stroke:none;" />' +
+      '</g>' +
+    '</g>';
+  }
+
+  if (!window.buildKaomojiSvg) {
+    window.buildKaomojiSvg = buildKaomojiSvg;
+  }
+
   function initLoader() {
     if (prefersReduced) return;
     loader = document.getElementById('site-loader');
@@ -168,11 +192,15 @@
           var runColor = r.color || '#22c55e';
           tile.style.color = runColor;
 
+          var isTreadmill = Boolean(r.is_track || (r.path && r.path.indexOf('A 26 26') !== -1));
           var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
           svg.setAttribute('viewBox', '0 0 100 100');
           svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
-          if (r.path) {
+          if (isTreadmill) {
+            tile.classList.add('treadmill-tile');
+            svg.innerHTML = buildKaomojiSvg(runColor);
+          } else if (r.path) {
             var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             path.setAttribute('d', r.path);
             svg.appendChild(path);
