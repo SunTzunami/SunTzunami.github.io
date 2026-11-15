@@ -226,16 +226,15 @@
       var t = performance.now();
       tongueUntil = t + 1300; wagUntil = t + 1700; request();
     });
-    var isMoti = doc.body.getAttribute('data-page') === 'moti';
-    if (isMoti) {
-      link.addEventListener('click', function (e) {
+    link.addEventListener('click', function (e) {
+      if (doc.body.getAttribute('data-page') === 'moti') {
         e.preventDefault();
         wagUntil = performance.now() + 2000;
         tongueUntil = performance.now() + 1400;
         request();
         window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
-      });
-    }
+      }
+    });
   }
 
   /* React happily to theme toggle: glance up-right towards button, double-blink & wag */

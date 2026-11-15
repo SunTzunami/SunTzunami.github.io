@@ -55,9 +55,9 @@
     }
   })();
   </script>
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=13">
   <script src="script.js?v=7" defer></script>
-  <script src="route-bg.js?v=6" defer></script>
+  <script src="route-bg.js?v=8" defer></script>
 </head>
 
 <body data-page="projects">
@@ -157,62 +157,7 @@
     </header>
 
     <div class="project-list">
-      <article class="project-card" id="spendsight">
-        <div class="thumbnail-wrapper">
-          <img src="images/projects/spending_snacks.png" alt="SpendSight" loading="lazy" decoding="async">
-          <div class="thumbnail-overlay">
-            <div class="overlay-meta">
-              <span class="overlay-year">2026</span>
-              <span>On-Device AI · Finance</span>
-            </div>
-            <h3 class="overlay-title">SpendSight</h3>
-            <p class="overlay-desc">Can sub-2B LLMs handle personal finance Q&amp;A? 89.1% accuracy in ~3s on 8GB M1 Mac.</p>
-            <div class="overlay-actions">
-              <button type="button" class="btn-read" aria-label="Read full story"><span>+</span> Read</button>
-              <a href="https://github.com/SunTzunami/ExpenseSense" target="_blank" rel="noreferrer" class="btn-ext">Code</a>
-            </div>
-          </div>
-        </div>
-        <div class="card-caption">
-          <h3>SpendSight <span class="circa">circa 2026</span></h3>
-          <span class="tags">On-Device AI · Small LLMs · Evaluation · Personal Finance</span>
-        </div>
-        <div class="full-content" hidden>
-
-        <div class="project-title-row">
-          <h2>SpendSight <span class="circa">circa 2026</span></h2><span class="tags">On-Device AI · Small LLMs ·
-            Evaluation · Personal Finance</span>
-        </div>
-        <div class="project-copy">
-          <p><strong>TLDR:</strong><br>
-          <strong>Question:</strong> Can sub-2B LLMs handle personal finance Q&amp;A?<br>
-          <strong>Finding:</strong> Mostly yes - One of the best setups reached 89.1% task accuracy in ~3s using 1.2 GB RAM.</p>
-
-          <p><strong>Back story:</strong><br>
-          I log my daily expenses in an excel and have custom dashboards, but they can’t answer ad-hoc questions like “how much did I spend on snacks over the past year?” or “compare my spending on groceries for jan 2026 vs jan 2025”.</p>
-          <p>I wondered: can I get sub-2B local LLMs to answer these reliably?</p>
-          <p><strong>Why local?</strong> - I didn’t wanna share my personal finance data with cloud providers.<br>
-          <strong>Why sub-2B?</strong> - I wanted quick responses (in &lt;10s, ideally &lt;5s) on my rather old PC (8GB M1 Mac).</p>
-
-          <p>I started experimenting with the top tiny LLMs (as per <a href="https://artificialanalysis.ai/leaderboards/models?size=tiny" target="_blank" rel="noreferrer">Artificial Analysis</a>). Early experiments showed that they struggled to generate accurate analytics code. Tool calling seemed to work much better, but inserting every tool definition in the prompt hurt both speed and accuracy. So we split the task into tool selection and parameter generation.</p>
-          <p>We built a 115-query test suite and benchmarked six small LLMs on accuracy, speed, memory use and failure modes across two architectures: single-agent and dual-agent, on an 8GB M1 Mac.</p>
-          <p>The part I'm probably most proud of is that we did the whole thing independently, without funding or special infrastructure, and still managed to get the work accepted at workshops at COLM and EMNLP.</p>
-          <p>Also, on a completely different metric, the system helped me cut my snack spending by about 85%, saving more than ¥30,000 (and also a few body-fat % points, I guess).</p>
-        </div>
-        <div class="project-media">
-          <img src="images/projects/spending_snacks.png"
-            alt="SpendSight natural language query plotting snack spending trends over time" loading="lazy"
-            decoding="async" width="2232" height="1460">
-          <div class="caption">SpendSight executing a local query and generating the spending trend chart in 3.4
-            seconds on an M1 Mac.</div>
-        </div>
-        <p class="project-links"><a href="https://github.com/SunTzunami/ExpenseSense" target="_blank"
-            rel="noreferrer">GitHub</a> · <a href="publications.html#spendsight">Publication: SpendSight: Privacy-Preserving Personal Finance Q&amp;A with Sub-2B LLMs</a></p>
-      
-        </div>
-      </article>
-
-            <article class="project-card" id="anything-arcade">
+      <article class="project-card" id="anything-arcade">
         <div class="thumbnail-wrapper">
           <img src="images/projects/gemini_hackathon.png" alt="Anything Arcade" loading="lazy" decoding="async">
           <div class="thumbnail-overlay">
@@ -256,59 +201,7 @@
         </div>
       </article>
 
-            <article class="project-card" id="leg-days">
-        <div class="thumbnail-wrapper">
-          <img src="images/projects/plot1.png" alt="Do Leg Days Suck?" loading="lazy" decoding="async">
-          <div class="thumbnail-overlay">
-            <div class="overlay-meta">
-              <span class="overlay-year">2024</span>
-              <span>Self-Experiment · Fitness</span>
-            </div>
-            <h3 class="overlay-title">Do Leg Days Suck?</h3>
-            <p class="overlay-desc">Comparing heart-rate biometrics during leg-day sessions versus other workouts.</p>
-            <div class="overlay-actions">
-              <button type="button" class="btn-read" aria-label="Read full story"><span>+</span> Read</button>
-              <a href="lab_log.html#leg-day" target="_blank" rel="noreferrer" class="btn-ext">Lab Log</a>
-            </div>
-          </div>
-        </div>
-        <div class="card-caption">
-          <h3>Do Leg Days Suck? <span class="circa">circa 2024</span></h3>
-          <span class="tags">Self-Experiment · Fitness · Data</span>
-        </div>
-        <div class="full-content" hidden>
-
-        <div class="project-year" aria-hidden="true">2024</div>
-
-        <div class="project-title-row">
-          <h2>Do Leg Days Suck? <span class="circa">circa 2024</span></h2>
-          <span class="tags">Self-Experiment · Fitness · Data</span>
-        </div>
-
-        <div class="project-copy">
-          <p>I’d always heard my friends complain about leg days being torturous and I’d wonder if it’s actually that bad. I was a runner so I didn’t train legs until a few injuries forced me to start adding exercises like Bulgarian split squats to my routine.</p>
-          <p>Leg days were quite tough indeed. To check if there was a quantitative proof of leg days being challenging (average heart rate for the session served as a proxy to how difficult the session was), I thought of comparing my average heart rate during leg-day gym sessions with my average heart rate during other gym sessions. There wasn't a sophisticated statistical model behind it. I just compared the two series and performed a difference in means test.</p>
-          <p>The answer was pretty much what I wanted it to be:<br>
-          <strong>Leg days are harder (or so the data tells).</strong></p>
-          <p>I wonder how much of it is psychological with me dreading the next set of squat or split squat and heart rate rising in anticipation.</p>
-        </div>
-
-        <div class="project-media">
-          <img src="images/projects/plot1.png" alt="Comparison of heart rate during leg-day and other gym sessions"
-            loading="lazy" decoding="async">
-          <div class="caption">
-            Avg HR on upper body weight training days vs lower body weight training days.
-          </div>
-        </div>
-
-        <p class="project-links">
-          <a href="lab_log.html#leg-day">See the fuller analysis in the Lab Log</a>
-        </p>
-      
-        </div>
-      </article>
-
-            <article class="project-card" id="fury">
+      <article class="project-card" id="fury">
         <div class="thumbnail-wrapper">
           <img src="images/projects/brownian.gif" alt="FURY: Google Summer of Code" loading="lazy" decoding="async">
           <div class="thumbnail-overlay">

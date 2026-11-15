@@ -635,6 +635,8 @@
     initPersonalRunningGrid();
   }
 
+  window.initRunningCharts = startAll;
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', startAll);
   } else {

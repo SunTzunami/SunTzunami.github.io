@@ -83,19 +83,170 @@
     showTime = performance.now();
   }
 
-  function dismissLoader() {
-    if (!loader) return;
+  function dismissLoader(callback) {
+    if (!loader) {
+      if (typeof callback === 'function') callback();
+      return;
+    }
     var elapsed = performance.now() - showTime;
-    // 550ms provides one crisp two-step running stride
-    var minVisibleTime = 550;
+    // 560ms provides exactly 1 full balanced running stride (0.28s x 2)
+    var minVisibleTime = 560;
     var remaining = Math.max(0, minVisibleTime - elapsed);
     setTimeout(function () {
-      if (!loader) return;
+      if (!loader) {
+        if (typeof callback === 'function') callback();
+        return;
+      }
       loader.classList.add('loaded');
+      // Clean up the exit animation state after transition completes
+      setTimeout(function () {
+        if (loader) loader.style.display = 'none';
+        if (typeof callback === 'function') callback();
+      }, 420);
     }, remaining);
   }
 
-  // Intercept internal link clicks for a seamless runner page transition
+  /* Seamless Client-Side Navigation Engine */
+  var isNavigating = false;
+  var loadedScripts = {};
+
+  function markLoadedScripts() {
+    Array.prototype.forEach.call(document.querySelectorAll('script[src]'), function (s) {
+      var src = s.getAttribute('src');
+      if (src) loadedScripts[src.split('?')[0]] = true;
+    });
+  }
+  markLoadedScripts();
+
+  function loadScript(src) {
+    return new Promise(function (resolve) {
+      var cleanSrc = src.split('?')[0];
+      if (loadedScripts[cleanSrc]) {
+        resolve();
+        return;
+      }
+      var script = document.createElement('script');
+      script.src = src;
+      script.onload = function () {
+        loadedScripts[cleanSrc] = true;
+        resolve();
+      };
+      script.onerror = function () {
+        resolve(); // Continue even if optional script fails
+      };
+      document.body.appendChild(script);
+    });
+  }
+
+  function updateNavActive(destUrl) {
+    var path = new URL(destUrl, window.location.origin).pathname;
+    var fileName = path.split('/').pop() || 'index.html';
+    if (fileName === '') fileName = 'index.html';
+
+    var navLinks = document.querySelectorAll('.nav-links a');
+    navLinks.forEach(function (a) {
+      var aPath = new URL(a.href, window.location.origin).pathname;
+      var aFileName = aPath.split('/').pop() || 'index.html';
+      if (aFileName === '') aFileName = 'index.html';
+
+      if (aFileName === fileName) {
+        a.setAttribute('aria-current', 'page');
+      } else {
+        a.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  function navigateTo(dest, push) {
+    if (isNavigating) return;
+    if (prefersReduced) {
+      window.location.href = dest;
+      return;
+    }
+
+    isNavigating = true;
+    initLoader();
+    if (loader) {
+      loader.style.display = 'flex';
+      loader.classList.remove('loaded');
+    }
+    var navStartTime = performance.now();
+
+    fetch(dest)
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function (html) {
+        var parser = new DOMParser();
+        var newDoc = parser.parseFromString(html, 'text/html');
+        var newMain = newDoc.getElementById('main');
+        if (!newMain) throw new Error('Target document missing #main');
+
+        var newScripts = Array.prototype.slice.call(newDoc.querySelectorAll('script[src]'));
+        var scriptPromises = newScripts.map(function (s) {
+          var src = s.getAttribute('src');
+          return src ? loadScript(src) : Promise.resolve();
+        });
+
+        // Ensure loader runs for at least 1 full stride (560ms) before swapping
+        var elapsed = performance.now() - navStartTime;
+        var minWait = Math.max(0, 560 - elapsed);
+
+        return Promise.all([
+          Promise.all(scriptPromises),
+          new Promise(function (resolve) { setTimeout(resolve, minWait); })
+        ]).then(function () {
+          // 1. Swap main content
+          var currentMain = document.getElementById('main');
+          if (currentMain) {
+            currentMain.innerHTML = newMain.innerHTML;
+          }
+
+          // 2. Update metadata
+          document.title = newDoc.title;
+          var newPage = newDoc.body.getAttribute('data-page') || '';
+          document.body.setAttribute('data-page', newPage);
+
+          // 3. Update navigation active state
+          updateNavActive(dest);
+
+          // 4. Update browser history
+          if (push) {
+            history.pushState({ path: dest }, '', dest);
+          }
+
+          // 5. Scroll handling
+          var urlObj = new URL(dest, window.location.origin);
+          if (urlObj.hash) {
+            var targetEl = document.querySelector(urlObj.hash);
+            if (targetEl) targetEl.scrollIntoView();
+            else window.scrollTo(0, 0);
+          } else {
+            window.scrollTo(0, 0);
+          }
+
+          // 6. Execute page initializers
+          if (newPage === 'personal') {
+            if (window.initPersonalPage) window.initPersonalPage();
+          }
+          if (window.initModalReader) {
+            window.initModalReader();
+          }
+
+          // 7. Dismiss loader with smooth sprint exit
+          dismissLoader(function () {
+            isNavigating = false;
+          });
+        });
+      })
+      .catch(function (err) {
+        console.warn('Seamless navigation fallback to hard navigation:', err);
+        window.location.href = dest;
+      });
+  }
+
+  // Intercept internal link clicks for seamless runner transition
   document.addEventListener('click', function (e) {
     if (prefersReduced) return;
     var link = e.target.closest('a');
@@ -107,29 +258,28 @@
     if (link.origin && link.origin !== window.location.origin) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
-    // Skip same-page anchors (e.g. personal.html#last-run on personal.html)
+    // Skip same-page anchors
     if (link.pathname === window.location.pathname && link.search === window.location.search) return;
 
-    var dest = link.href;
     e.preventDefault();
-    initLoader();
-    if (loader) {
-      loader.classList.remove('loaded');
-    }
-    setTimeout(function () {
-      window.location.href = dest;
-    }, 200);
+    navigateTo(link.href, true);
+  });
+
+  // Handle browser Back/Forward (popstate)
+  window.addEventListener('popstate', function () {
+    navigateTo(window.location.href, false);
   });
 
   // Handle browser Back/Forward (bfcache)
   window.addEventListener('pageshow', function (e) {
     if (e.persisted && loader) {
       loader.classList.add('loaded');
+      loader.style.display = 'none';
     }
   });
 
-  // Safety fallback: never keep loader up more than 2.4s even if offline or slow
-  setTimeout(dismissLoader, 2400);
+  // Safety fallback: never keep loader up more than 2.8s even if offline or slow
+  setTimeout(dismissLoader, 2800);
 
   function init() {
     initLoader();

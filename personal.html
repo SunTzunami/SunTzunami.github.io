@@ -55,10 +55,10 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=13">
   <script src="script.js?v=7" defer></script>
-  <script src="run-modal.js" defer></script>
-  <script src="route-bg.js?v=6" defer></script>
+  <script src="run-modal.js?v=2" defer></script>
+  <script src="route-bg.js?v=8" defer></script>
 </head>
 
 <body data-page="personal">
@@ -436,7 +436,7 @@
 
   </main>
   <script>
-    (function () {
+    function initLastRunCard() {
       var detailsEl = document.getElementById('last-run-details');
       var pathEl = document.getElementById('last-run-path');
       var updatedEl = document.getElementById('garmin-updated');
@@ -558,11 +558,9 @@
         .catch(function () {
           detailsEl.innerHTML = '<p class="activity-empty">Couldn\'t load run data right now.</p>';
         });
-    })();
-  </script>
+    }
 
-  <script>
-    (function () {
+    function initMuseStories() {
       document.querySelectorAll('.muse').forEach(function (muse) {
         var toggle = muse.querySelector('.muse-toggle');
         var story = muse.querySelector('.muse-story');
@@ -578,7 +576,18 @@
 
         muse.addEventListener('click', toggleStory);
       });
-    })();
+    }
+
+    window.initLastRunCard = initLastRunCard;
+    window.initMuseStories = initMuseStories;
+    window.initPersonalPage = function () {
+      initLastRunCard();
+      initMuseStories();
+      if (window.initRunningCharts) window.initRunningCharts();
+    };
+
+    initLastRunCard();
+    initMuseStories();
   </script>
 
   <footer class="footer">Last updated: October 2026</footer>

@@ -261,12 +261,25 @@
     // Populate Route Path
     var svgWrap = document.getElementById('run-m-svg');
     if (svgWrap) {
+      var wrapParent = svgWrap.closest('.run-route-canvas-wrap');
       if (isTreadmill) {
+        if (wrapParent) wrapParent.classList.add('treadmill-running');
         svgWrap.innerHTML = buildKaomojiSvg(r.color);
-        svgWrap.onclick = null;
-        svgWrap.removeAttribute('title');
-        svgWrap.style.cursor = 'default';
+        svgWrap.style.cursor = 'pointer';
+        svgWrap.setAttribute('title', 'Click to sprint!');
+        svgWrap.onclick = function () {
+          if (wrapParent) {
+            wrapParent.classList.add('sprinting');
+            setTimeout(function () {
+              wrapParent.classList.remove('sprinting');
+            }, 1800);
+          }
+        };
       } else {
+        if (wrapParent) {
+          wrapParent.classList.remove('treadmill-running');
+          wrapParent.classList.remove('sprinting');
+        }
         svgWrap.innerHTML = '<path id="run-m-path" d="' + (r.path || '') + '" style="stroke:' + (r.color || 'var(--dog)') + '; filter:drop-shadow(0 4px 12px ' + (r.color || '#b5771f') + '66);"/>';
         var animateTrace = function () {
           var pathEl = svgWrap.querySelector('#run-m-path');

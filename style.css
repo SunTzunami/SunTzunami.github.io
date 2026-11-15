@@ -1856,8 +1856,12 @@ html:not(.js) .site-loader {
   background: var(--bg);
   opacity: 1;
   visibility: visible;
-  transition: opacity 0.25s ease, visibility 0.25s ease;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0, 1),
+              visibility 0.4s cubic-bezier(0.4, 0, 0, 1);
   pointer-events: auto;
+  overflow: hidden;
+  will-change: opacity, visibility;
+  transform: translateZ(0);
 }
 
 .site-loader.loaded {
@@ -1866,21 +1870,153 @@ html:not(.js) .site-loader {
   pointer-events: none;
 }
 
+/* Wipe curtain — slides away as the runner "opens" the page */
+.site-loader::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  transform: scaleX(1);
+  transform-origin: left center;
+  transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.site-loader.loaded::after {
+  transform: scaleX(0);
+  transform-origin: right center;
+}
+
 .site-loader-box {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  z-index: 2;
+  will-change: transform;
+  transform: translateZ(0);
+  /* The whole box runs across the screen on exit */
+  animation: runner-enter 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.site-loader.loaded .site-loader-box {
+  animation: runner-exit 0.4s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+@keyframes runner-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-60px) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes runner-exit {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(40vw) scale(1.08);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100vw) scale(0.9);
+  }
 }
 
 .site-loader-walker {
+  position: relative;
   width: 168px;
   height: 50px;
   color: var(--ink);
   line-height: 1;
   user-select: none;
-  animation: runner-bounce 0.27s ease-in-out infinite alternate;
+  animation: runner-bounce 0.28s ease-in-out infinite alternate;
   transform-origin: bottom center;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Dust puffs behind the runner */
+.site-loader-walker::before,
+.site-loader-walker::after {
+  content: "";
+  position: absolute;
+  bottom: 18px;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0;
+  pointer-events: none;
+  animation: dust-puff 0.7s ease-out infinite;
+}
+
+.site-loader-walker::before {
+  left: -8px;
+  width: 6px;
+  height: 6px;
+  animation-delay: 0s;
+}
+
+.site-loader-walker::after {
+  left: -18px;
+  width: 4px;
+  height: 4px;
+  animation-delay: 0.18s;
+}
+
+@keyframes dust-puff {
+  0% {
+    opacity: 0.18;
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.08;
+    transform: translate(-14px, -6px) scale(1.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-28px, -12px) scale(0.4);
+  }
+}
+
+/* Speed lines — horizontal streaks */
+.site-loader-box::before,
+.site-loader-box::after {
+  content: "";
+  position: absolute;
+  right: calc(100% + 12px);
+  height: 1.5px;
+  background: linear-gradient(to left, var(--ink), transparent);
+  border-radius: 1px;
+  opacity: 0;
+  animation: speed-line 0.48s ease-out infinite;
+}
+
+.site-loader-box::before {
+  top: 40%;
+  width: 32px;
+  animation-delay: 0s;
+}
+
+.site-loader-box::after {
+  top: 60%;
+  width: 22px;
+  animation-delay: 0.15s;
+}
+
+@keyframes speed-line {
+  0% {
+    opacity: 0.3;
+    transform: translateX(0) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-20px) scaleX(0.3);
+  }
 }
 
 .site-loader-svg {
@@ -1892,12 +2028,12 @@ html:not(.js) .site-loader {
 
 .site-loader-svg .runner-pose-a {
   opacity: 1;
-  animation: runner-pose-a 0.54s steps(1) infinite;
+  animation: runner-pose-a 0.56s steps(1) infinite;
 }
 
 .site-loader-svg .runner-pose-b {
   opacity: 0;
-  animation: runner-pose-b 0.54s steps(1) infinite;
+  animation: runner-pose-b 0.56s steps(1) infinite;
 }
 
 @keyframes runner-pose-a {
@@ -1932,7 +2068,7 @@ html:not(.js) .site-loader {
   background: rgba(27, 28, 30, 0.16);
   border-radius: 50%;
   margin-top: 14px;
-  animation: runner-shadow 0.27s ease-in-out infinite alternate;
+  animation: runner-shadow 0.28s ease-in-out infinite alternate;
 }
 
 html[data-theme="dark"] .site-loader-shadow {
@@ -1946,11 +2082,11 @@ html[data-theme="dark"] .dog-shadow {
 
 @keyframes runner-bounce {
   0% {
-    transform: translateY(0) scale(1.04, 0.96) rotate(-1deg);
+    transform: translateY(0) scale(1.05, 0.95);
   }
 
   100% {
-    transform: translateY(-20px) scale(0.97, 1.03) rotate(1.5deg);
+    transform: translateY(-16px) scale(0.96, 1.04);
   }
 }
 
@@ -1961,8 +2097,8 @@ html[data-theme="dark"] .dog-shadow {
   }
 
   100% {
-    transform: scale(0.5);
-    opacity: 0.08;
+    transform: scale(0.4);
+    opacity: 0.06;
   }
 }
 
@@ -1973,6 +2109,21 @@ html[data-theme="dark"] .dog-shadow {
   .site-loader-svg .runner-pose-a,
   .site-loader-svg .runner-pose-b {
     animation: none;
+  }
+
+  .site-loader-walker::before,
+  .site-loader-walker::after,
+  .site-loader-box::before,
+  .site-loader-box::after {
+    display: none;
+  }
+
+  .site-loader-box {
+    animation: none !important;
+  }
+
+  .site-loader::after {
+    display: none;
   }
 }
 
@@ -2988,37 +3139,64 @@ path.kaomoji-glyph {
 
 .run-m-kaomoji .runner-pose-a {
   opacity: 1;
+  animation: runner-pose-a 0.56s steps(1) infinite;
 }
 
 .run-m-kaomoji .runner-pose-b {
   opacity: 0;
+  animation: runner-pose-b 0.56s steps(1) infinite;
 }
 
 .personal-grid-tile .run-m-kaomoji {
   filter: none !important;
 }
 
+/* Hover or sprint speed-up cadence */
 .run-route-canvas-wrap:hover .run-m-kaomoji .runner-pose-a,
 .last-run-card:hover .run-m-kaomoji .runner-pose-a,
-.personal-grid-tile:hover .run-m-kaomoji .runner-pose-a {
-  animation: runner-pose-a 0.54s steps(1) infinite;
+.personal-grid-tile:hover .run-m-kaomoji .runner-pose-a,
+.run-route-canvas-wrap.sprinting .run-m-kaomoji .runner-pose-a {
+  animation: runner-pose-a 0.36s steps(1) infinite;
 }
 
 .run-route-canvas-wrap:hover .run-m-kaomoji .runner-pose-b,
 .last-run-card:hover .run-m-kaomoji .runner-pose-b,
-.personal-grid-tile:hover .run-m-kaomoji .runner-pose-b {
-  animation: runner-pose-b 0.54s steps(1) infinite;
+.personal-grid-tile:hover .run-m-kaomoji .runner-pose-b,
+.run-route-canvas-wrap.sprinting .run-m-kaomoji .runner-pose-b {
+  animation: runner-pose-b 0.36s steps(1) infinite;
+}
+
+/* Natural runner bounce in modal dialog and cards */
+.run-route-canvas-wrap.treadmill-running svg {
+  animation: kaomoji-treadmill-bounce 0.28s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+
+.run-route-canvas-wrap.treadmill-running.sprinting svg {
+  animation: kaomoji-treadmill-bounce 0.18s ease-in-out infinite alternate;
+}
+
+@keyframes kaomoji-treadmill-bounce {
+  0% {
+    transform: translateY(0) scale(1.03, 0.97);
+  }
+  100% {
+    transform: translateY(-5px) scale(0.97, 1.03);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
 
+  .run-m-kaomoji .runner-pose-a,
+  .run-m-kaomoji .runner-pose-b,
   .run-route-canvas-wrap:hover .run-m-kaomoji .runner-pose-a,
   .run-route-canvas-wrap:hover .run-m-kaomoji .runner-pose-b,
   .last-run-card:hover .run-m-kaomoji .runner-pose-a,
   .last-run-card:hover .run-m-kaomoji .runner-pose-b,
   .personal-grid-tile:hover .run-m-kaomoji .runner-pose-a,
-  .personal-grid-tile:hover .run-m-kaomoji .runner-pose-b {
-    animation: none;
+  .personal-grid-tile:hover .run-m-kaomoji .runner-pose-b,
+  .run-route-canvas-wrap.treadmill-running svg {
+    animation: none !important;
   }
 }
 
