@@ -1326,6 +1326,7 @@ body.modal-open {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 32px 28px;
+  align-items: start;
 }
 
 .muse {
