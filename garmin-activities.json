@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T13:11:12Z",
+  "updated": "2026-11-17T13:13:15Z",
   "summary": {
     "total_distance_km": 4425.1,
     "total_runs": 925,
@@ -4586,8 +4586,8 @@
     },
     {
       "id": 25081991844,
-      "name": "Running",
-      "type": "running",
+      "name": "Treadmill running",
+      "type": "treadmill_running",
       "date": "2026-11-15 10:59:07",
       "distance_km": 1.12,
       "duration_min": 8.0,
@@ -4597,7 +4597,7 @@
       "avg_pace_min_km": 7.14,
       "elevation_gain_m": 1.0,
       "location": "Setagaya Ward",
-      "typeLabel": "Run"
+      "typeLabel": "Treadmill"
     },
     {
       "id": 25073237699,
