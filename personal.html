@@ -57,8 +57,8 @@
   </script>
   <link rel="stylesheet" href="style.css?v=13">
   <script src="script.js?v=7" defer></script>
-  <script src="run-modal.js?v=2" defer></script>
-  <script src="route-bg.js?v=8" defer></script>
+  <script src="run-modal.js?v=3" defer></script>
+  <script src="route-bg.js?v=9" defer></script>
 </head>
 
 <body data-page="personal">
@@ -214,8 +214,8 @@
               height="1200"></a>
           <h3>Kobe Bryant</h3>
           <p class="quote">“Everything negative - pressure, challenges - is all an opportunity for me to rise.”</p>
-          <button type="button" class="muse-toggle" aria-expanded="false">Story +</button>
-          <div class="muse-story" hidden>
+          <button type="button" class="muse-toggle" aria-expanded="false" aria-controls="muse-story-kobe">Story +</button>
+          <div class="muse-story" id="muse-story-kobe" hidden>
             <p>I gave JEE Mains back in Jan 2019 and had gotten a poor score, I was devastated. Around that time I came
               across Kobe's story and read about his struggles during the 1996 playoffs and how he responded to them
               (shutting himself in the gym and shooting all day), and I started treating the next few months the same
@@ -233,8 +233,8 @@
               height="1200"></a>
           <h3>Maryam Mirzakhani</h3>
           <p class="quote">“The beauty of mathematics only shows itself to more patient followers.”</p>
-          <button type="button" class="muse-toggle" aria-expanded="false">Story +</button>
-          <div class="muse-story" hidden>
+          <button type="button" class="muse-toggle" aria-expanded="false" aria-controls="muse-story-maryam">Story +</button>
+          <div class="muse-story" id="muse-story-maryam" hidden>
             <p>I heard about her back in 2014, I was in 8th grade and I got to know her as the first woman to win the
               Fields Medal. What I found inspiring about Maryam Mirzakhani wasn’t just the fact that she became the
               first woman to win the Fields Medal but that she dedicated herself to problems that were genuinely,
@@ -250,8 +250,8 @@
               height="1799"></a>
           <h3>Michael Jordan</h3>
           <p class="quote">“Limits, like fears, are often just an illusion.”</p>
-          <button type="button" class="muse-toggle" aria-expanded="false">Story +</button>
-          <div class="muse-story" hidden>
+          <button type="button" class="muse-toggle" aria-expanded="false" aria-controls="muse-story-jordan">Story +</button>
+          <div class="muse-story" id="muse-story-jordan" hidden>
             <p>I've felt underrated at different points in my life. What I admire about Jordan is the way he seemed to
               turn that feeling into fuel rather than letting it become an excuse. Also, his slightly manic competitive
               nature is weirdly close to Vegeta in my head. But I digress.</p>
@@ -435,162 +435,9 @@
     </section>
 
   </main>
-  <script>
-    function initLastRunCard() {
-      var detailsEl = document.getElementById('last-run-details');
-      var pathEl = document.getElementById('last-run-path');
-      var updatedEl = document.getElementById('garmin-updated');
-      var cardEl = document.getElementById('last-run-card');
-      if (!detailsEl) return;
-
-      Promise.all([
-        fetch('garmin-activities.json').then(function (r) { return r.ok ? r.json() : null; }),
-        fetch('runs-2026-grid.json').then(function (r) { return r.ok ? r.json() : null; })
-      ])
-        .then(function (results) {
-          var data = results[0];
-          var grid = results[1] || [];
-
-          if (!data || !data.activities || data.activities.length === 0) {
-            detailsEl.innerHTML = '<p class="activity-empty">No runs yet - check back soon.</p>';
-            return;
-          }
-
-          var a = data.activities[0]; // latest run
-          var latestGrid = grid.length ? grid[grid.length - 1] : null;
-
-          var date = a.date ? new Date(a.date) : null;
-          var dateStr = date
-            ? date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-            : '';
-
-          // Determine general time category
-          var hour = date ? date.getHours() : 8;
-          var timeCategory = 'Run';
-          if (hour >= 5 && hour < 12) timeCategory = 'Morning Run';
-          else if (hour >= 12 && hour < 17) timeCategory = 'Afternoon Run';
-          else if (hour >= 17 && hour < 21) timeCategory = 'Evening Run';
-          else timeCategory = 'Night Run';
-
-          // Format pace as M:SS
-          var paceStr = '';
-          if (a.avg_pace_min_km) {
-            var mins = Math.floor(a.avg_pace_min_km);
-            var secs = Math.round((a.avg_pace_min_km - mins) * 60);
-            paceStr = mins + ':' + (secs < 10 ? '0' : '') + secs + ' /km';
-          }
-
-          // Format duration
-          var durStr = '';
-          if (a.duration_min) {
-            if (a.duration_min >= 60) {
-              var h = Math.floor(a.duration_min / 60);
-              var m = Math.round(a.duration_min % 60);
-              durStr = h + 'h ' + m + 'm';
-            } else {
-              durStr = Math.round(a.duration_min) + 'm';
-            }
-          }
-
-          var html = '<div class="last-run-header">';
-          html += '<span class="last-run-label">Latest Run</span>';
-          html += '<span class="last-run-date">' + dateStr + '</span>';
-          html += '</div>';
-          html += '<div class="last-run-name">' + timeCategory + '</div>';
-          html += '<div class="last-run-stats">';
-          if (a.distance_km) html += '<div class="run-stat"><span class="run-stat-value">' + a.distance_km.toFixed(1) + '</span><span class="run-stat-unit">km</span></div>';
-          if (durStr) html += '<div class="run-stat"><span class="run-stat-value">' + durStr + '</span><span class="run-stat-unit">time</span></div>';
-          if (paceStr) html += '<div class="run-stat"><span class="run-stat-value">' + paceStr + '</span><span class="run-stat-unit">pace</span></div>';
-          if (a.avg_hr) html += '<div class="run-stat"><span class="run-stat-value">' + Math.round(a.avg_hr) + '</span><span class="run-stat-unit">bpm</span></div>';
-          html += '</div>';
-
-          detailsEl.innerHTML = html;
-
-          // Render normalized abstract route vector silhouette
-          if (pathEl && latestGrid && latestGrid.path) {
-            var isTreadmill = latestGrid.path.indexOf('A 26 26') !== -1;
-            if (isTreadmill) {
-              var svgWrap = pathEl.parentNode;
-              if (svgWrap && window.buildKaomojiSvg) {
-                svgWrap.innerHTML = window.buildKaomojiSvg(latestGrid.color);
-              }
-            } else {
-              pathEl.setAttribute('d', latestGrid.path);
-              if (latestGrid.color) {
-                pathEl.style.stroke = latestGrid.color;
-                pathEl.style.filter = 'drop-shadow(0 4px 12px ' + latestGrid.color + '55)';
-              }
-              if (typeof pathEl.getTotalLength === 'function') {
-                try {
-                  var len = pathEl.getTotalLength();
-                  if (len > 0) {
-                    pathEl.style.strokeDasharray = len;
-                    pathEl.style.strokeDashoffset = len;
-                    var spd = (latestGrid.spd && latestGrid.spd > 0) ? latestGrid.spd : 10.5;
-                    var dur = Math.max(0.7, Math.min(3.0, 18 / spd));
-                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                      dur = 0;
-                    }
-                    pathEl.getBoundingClientRect();
-                    pathEl.style.transition = 'stroke-dashoffset ' + dur.toFixed(2) + 's cubic-bezier(0.25, 1, 0.5, 1)';
-                    pathEl.style.strokeDashoffset = '0';
-                  }
-                } catch (e) { }
-              }
-            }
-          }
-
-          if (cardEl && latestGrid) {
-            cardEl.addEventListener('click', function () {
-              if (window.openRunDetail) {
-                window.openRunDetail(latestGrid, grid);
-              }
-            });
-          }
-
-          if (data.updated && updatedEl) {
-            var u = new Date(data.updated);
-            updatedEl.textContent = 'Last synced: ' + u.toLocaleDateString('en-US', {
-              month: 'short', day: 'numeric', year: 'numeric'
-            });
-          }
-        })
-        .catch(function () {
-          detailsEl.innerHTML = '<p class="activity-empty">Couldn\'t load run data right now.</p>';
-        });
-    }
-
-    function initMuseStories() {
-      document.querySelectorAll('.muse').forEach(function (muse) {
-        var toggle = muse.querySelector('.muse-toggle');
-        var story = muse.querySelector('.muse-story');
-        if (!toggle || !story) return;
-
-        function toggleStory(e) {
-          if (e.target.closest('a')) return;
-          var isHidden = story.hidden;
-          story.hidden = !isHidden;
-          toggle.setAttribute('aria-expanded', String(isHidden));
-          toggle.textContent = isHidden ? 'Close story -' : 'Story +';
-        }
-
-        muse.addEventListener('click', toggleStory);
-      });
-    }
-
-    window.initLastRunCard = initLastRunCard;
-    window.initMuseStories = initMuseStories;
-    window.initPersonalPage = function () {
-      initLastRunCard();
-      initMuseStories();
-      if (window.initRunningCharts) window.initRunningCharts();
-    };
-
-    initLastRunCard();
-    initMuseStories();
-  </script>
 
   <footer class="footer">Last updated: October 2026</footer>
+  <script src="personal-page.js?v=2" defer></script>
   <script src="running-charts.js" defer></script>
 </body>
 

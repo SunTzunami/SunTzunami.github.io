@@ -183,13 +183,43 @@
         var newMain = newDoc.getElementById('main');
         if (!newMain) throw new Error('Target document missing #main');
 
+        // 1. Swap main content immediately behind active loader
+        var currentMain = document.getElementById('main');
+        if (currentMain) {
+          currentMain.innerHTML = newMain.innerHTML;
+        }
+
+        // 2. Update metadata
+        document.title = newDoc.title;
+        var newPage = newDoc.body.getAttribute('data-page') || '';
+        document.body.setAttribute('data-page', newPage);
+
+        // 3. Update navigation active state
+        updateNavActive(dest);
+
+        // 4. Update browser history
+        if (push) {
+          history.pushState({ path: dest }, '', dest);
+        }
+
+        // 5. Scroll handling
+        var urlObj = new URL(dest, window.location.origin);
+        if (urlObj.hash) {
+          var targetEl = document.querySelector(urlObj.hash);
+          if (targetEl) targetEl.scrollIntoView();
+          else window.scrollTo(0, 0);
+        } else {
+          window.scrollTo(0, 0);
+        }
+
+        // Load page-specific scripts on the freshly updated DOM
         var newScripts = Array.prototype.slice.call(newDoc.querySelectorAll('script[src]'));
         var scriptPromises = newScripts.map(function (s) {
           var src = s.getAttribute('src');
           return src ? loadScript(src) : Promise.resolve();
         });
 
-        // Ensure loader runs for at least 1 full stride (560ms) before swapping
+        // Ensure loader runs for at least 1 full stride (560ms) before fading out
         var elapsed = performance.now() - navStartTime;
         var minWait = Math.max(0, 560 - elapsed);
 
@@ -197,41 +227,16 @@
           Promise.all(scriptPromises),
           new Promise(function (resolve) { setTimeout(resolve, minWait); })
         ]).then(function () {
-          // 1. Swap main content
-          var currentMain = document.getElementById('main');
-          if (currentMain) {
-            currentMain.innerHTML = newMain.innerHTML;
-          }
-
-          // 2. Update metadata
-          document.title = newDoc.title;
-          var newPage = newDoc.body.getAttribute('data-page') || '';
-          document.body.setAttribute('data-page', newPage);
-
-          // 3. Update navigation active state
-          updateNavActive(dest);
-
-          // 4. Update browser history
-          if (push) {
-            history.pushState({ path: dest }, '', dest);
-          }
-
-          // 5. Scroll handling
-          var urlObj = new URL(dest, window.location.origin);
-          if (urlObj.hash) {
-            var targetEl = document.querySelector(urlObj.hash);
-            if (targetEl) targetEl.scrollIntoView();
-            else window.scrollTo(0, 0);
-          } else {
-            window.scrollTo(0, 0);
-          }
-
-          // 6. Execute page initializers
-          if (newPage === 'personal') {
-            if (window.initPersonalPage) window.initPersonalPage();
-          }
-          if (window.initModalReader) {
-            window.initModalReader();
+          // 6. Execute page initializers (wrapped so errors can't lock isNavigating)
+          try {
+            if (newPage === 'personal') {
+              if (window.initPersonalPage) window.initPersonalPage();
+            }
+            if (window.initModalReader) {
+              window.initModalReader();
+            }
+          } catch (initErr) {
+            console.warn('Page initializer error (non-fatal):', initErr);
           }
 
           // 7. Dismiss loader with smooth sprint exit
@@ -242,6 +247,7 @@
       })
       .catch(function (err) {
         console.warn('Seamless navigation fallback to hard navigation:', err);
+        isNavigating = false;
         window.location.href = dest;
       });
   }
@@ -266,7 +272,12 @@
   });
 
   // Handle browser Back/Forward (popstate)
+  // If a modal is open, let the modal handler handle the Back press (close modal, don't navigate)
   window.addEventListener('popstate', function () {
+    var m1 = document.getElementById('reading-modal');
+    if (m1 && m1.classList.contains('active')) return;
+    var m2 = document.getElementById('run-detail-modal');
+    if (m2 && m2.classList.contains('active')) return;
     navigateTo(window.location.href, false);
   });
 
@@ -279,7 +290,7 @@
   });
 
   // Safety fallback: never keep loader up more than 2.8s even if offline or slow
-  setTimeout(dismissLoader, 2800);
+  setTimeout(function () { dismissLoader(); isNavigating = false; }, 2800);
 
   function init() {
     initLoader();

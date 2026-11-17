@@ -7,6 +7,9 @@
   var modalBody = null;
   var modalCloseBtn = null;
   var previouslyFocusedEl = null;
+  var clickListenerAttached = false; // guard: only ever attach ONE click listener
+  var modalStatePushed = false;      // tracks whether we pushed a history state for this modal open
+  var closingFromPopstate = false;   // prevents recursive popstate → closeModal → history.back loop
 
   function getFocusableElements(container) {
     if (!container) return [];
@@ -18,7 +21,15 @@
   }
 
   function createModal() {
-    if (document.getElementById('reading-modal')) return;
+    // Re-use existing modal if already in DOM (e.g. after SPA navigation that keeps <body>)
+    var existing = document.getElementById('reading-modal');
+    if (existing) {
+      modal = existing;
+      modalBackdrop = document.getElementById('reading-modal-backdrop');
+      modalBody = modal.querySelector('.modal-body');
+      modalCloseBtn = modal.querySelector('.modal-close-btn');
+      return;
+    }
 
     modalBackdrop = document.createElement('div');
     modalBackdrop.id = 'reading-modal-backdrop';
@@ -95,6 +106,12 @@
     modal.classList.add('active');
     document.body.classList.add('modal-open');
 
+    // Push a history state so the browser Back button closes the modal instead of navigating away
+    if (!modalStatePushed) {
+      history.pushState({ modalOpen: true }, '');
+      modalStatePushed = true;
+    }
+
     // Accessibility focus
     modalCloseBtn.focus();
   }
@@ -105,6 +122,15 @@
     modal.classList.remove('active');
     document.body.classList.remove('modal-open');
 
+    // If the user closed via button/backdrop (not via Back button), pop the history state we pushed
+    if (modalStatePushed && !closingFromPopstate) {
+      modalStatePushed = false;
+      history.back(); // pops the {modalOpen:true} state; route-bg.js popstate will skip nav because modal is now inactive
+    } else {
+      modalStatePushed = false;
+      closingFromPopstate = false;
+    }
+
     if (previouslyFocusedEl && typeof previouslyFocusedEl.focus === 'function') {
       try {
         previouslyFocusedEl.focus();
@@ -113,27 +139,41 @@
     }
   }
 
+  function onDocClick(e) {
+    // If the modal is open, let its own listeners handle clicks inside it
+    if (modal && modal.classList.contains('active')) return;
+
+    var readBtn = e.target.closest('.btn-read');
+    if (readBtn) {
+      e.preventDefault();
+      var card = readBtn.closest('.project-card, .pub-card, .log-card');
+      if (card) openModal(card);
+      return;
+    }
+
+    var cardThumb = e.target.closest('.thumbnail-wrapper');
+    if (cardThumb && !e.target.closest('.btn-ext')) {
+      var card = cardThumb.closest('.project-card, .pub-card, .log-card');
+      if (card) openModal(card);
+    }
+  }
+
+  // Handle browser Back button closing the modal
+  window.addEventListener('popstate', function () {
+    if (modal && modal.classList.contains('active')) {
+      closingFromPopstate = true;
+      closeModal();
+    }
+  });
+
   function init() {
     createModal();
 
-    // Event delegation for card clicks & read buttons
-    document.addEventListener('click', function (e) {
-      var readBtn = e.target.closest('.btn-read');
-      if (readBtn) {
-        e.preventDefault();
-        var card = readBtn.closest('.project-card, .pub-card, .log-card');
-        if (card) openModal(card);
-        return;
-      }
-
-      var cardThumb = e.target.closest('.thumbnail-wrapper');
-      if (cardThumb && !e.target.closest('.btn-ext')) {
-        var card = cardThumb.closest('.project-card, .pub-card, .log-card');
-        if (card) {
-          openModal(card);
-        }
-      }
-    });
+    // Only attach the delegated click listener ONCE — survives multiple SPA re-inits
+    if (!clickListenerAttached) {
+      document.addEventListener('click', onDocClick);
+      clickListenerAttached = true;
+    }
 
     // Check URL hash on load
     if (window.location.hash) {
@@ -155,4 +195,3 @@
     init();
   }
 })();
-

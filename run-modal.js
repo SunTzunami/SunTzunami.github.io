@@ -12,6 +12,8 @@
   var modalEl = null;
   var backdropEl = null;
   var previouslyFocusedEl = null;
+  var modalStatePushed = false;
+  var closingFromPopstate = false;
 
   function getFocusableElements(container) {
     if (!container) return [];
@@ -356,6 +358,11 @@
     modalEl.classList.add('active');
     document.body.classList.add('modal-open');
 
+    if (!modalStatePushed) {
+      history.pushState({ runDetailOpen: true }, '');
+      modalStatePushed = true;
+    }
+
     var closeBtn = document.getElementById('run-m-close');
     if (closeBtn && document.activeElement !== closeBtn && !modalEl.contains(document.activeElement)) {
       closeBtn.focus();
@@ -380,6 +387,14 @@
     if (modalEl) modalEl.classList.remove('active');
     document.body.classList.remove('modal-open');
 
+    if (modalStatePushed && !closingFromPopstate) {
+      modalStatePushed = false;
+      history.back();
+    } else {
+      modalStatePushed = false;
+      closingFromPopstate = false;
+    }
+
     if (previouslyFocusedEl && typeof previouslyFocusedEl.focus === 'function') {
       try {
         previouslyFocusedEl.focus();
@@ -387,6 +402,13 @@
       previouslyFocusedEl = null;
     }
   }
+
+  window.addEventListener('popstate', function () {
+    if (modalEl && modalEl.classList.contains('active')) {
+      closingFromPopstate = true;
+      closeModal();
+    }
+  });
 
   // Expose global methods
   window.openRunDetail = openRunModal;
