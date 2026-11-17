@@ -209,18 +209,58 @@
               toggle.focus();
             }
           });
+
+          var openHobbies = document.querySelectorAll('.hobby-body:not([hidden])');
+          openHobbies.forEach(function (b) {
+            b.hidden = true;
+            var h = b.closest('.hobby');
+            var t = h ? h.querySelector('.hobby-toggle') : null;
+            if (t) t.setAttribute('aria-expanded', 'false');
+          });
         }
       });
       museKeydownAttached = true;
     }
   }
 
+  /* ── Hobby Toggles ──────────────────────────────────────────────────────── */
+  function initHobbyToggles() {
+    document.querySelectorAll('.hobby').forEach(function (hobby) {
+      var header = hobby.querySelector('.hobby-header');
+      var toggle = hobby.querySelector('.hobby-toggle');
+      var body   = hobby.querySelector('.hobby-body');
+      if (!toggle || !body) return;
+
+      if (toggle.dataset.hobbyBound) return;
+      toggle.dataset.hobbyBound = 'true';
+
+      function toggleHobby() {
+        var isHidden = body.hidden;
+        body.hidden = !isHidden;
+        toggle.setAttribute('aria-expanded', String(isHidden));
+      }
+
+      toggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleHobby();
+      });
+
+      if (header) {
+        header.addEventListener('click', function () {
+          toggleHobby();
+        });
+      }
+    });
+  }
+
   /* ── Public API (called by route-bg.js SPA engine) ──────────────────────── */
   window.initLastRunCard  = initLastRunCard;
   window.initMuseStories  = initMuseStories;
+  window.initHobbyToggles = initHobbyToggles;
   window.initPersonalPage = function () {
     initLastRunCard();
     initMuseStories();
+    initHobbyToggles();
     if (window.initRunningCharts) window.initRunningCharts();
   };
 
@@ -229,9 +269,11 @@
     document.addEventListener('DOMContentLoaded', function () {
       initLastRunCard();
       initMuseStories();
+      initHobbyToggles();
     });
   } else {
     initLastRunCard();
     initMuseStories();
+    initHobbyToggles();
   }
 })();

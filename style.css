@@ -204,7 +204,8 @@ p:last-child {
   margin-bottom: 0;
 }
 
-ul, ol {
+ul,
+ol {
   margin: 0 0 1em;
   padding-left: 1.35em;
 }
@@ -428,6 +429,7 @@ html[data-theme="dark"] .theme-toggle .theme-icon-moon {
 }
 
 @media (min-width: 721px) {
+
   :root,
   html[data-theme="light"],
   html[data-theme="dark"] {
@@ -449,6 +451,7 @@ html[data-theme="dark"] .theme-toggle .theme-icon-moon {
 }
 
 @media (max-width: 720px) {
+
   :root,
   html[data-theme="light"],
   html[data-theme="dark"] {
@@ -540,12 +543,12 @@ main {
   border-top: 1px solid var(--line);
 }
 
-.section > h2 {
+.section>h2 {
   margin-bottom: 1.1em;
 }
 
-main > .section:first-child,
-.page-header + .section {
+main>.section:first-child,
+.page-header+.section {
   margin-top: 0;
   padding-top: 0;
   border-top: 0;
@@ -633,7 +636,7 @@ main > .section:first-child,
   color: var(--ink-3);
 }
 
-.names span + span {
+.names span+span {
   padding-left: 16px;
   border-left: 1px solid var(--line-strong);
 }
@@ -782,7 +785,7 @@ main > .section:first-child,
 }
 
 .contact-list dt:first-of-type,
-.contact-list dt:first-of-type + dd {
+.contact-list dt:first-of-type+dd {
   border-top: 0;
 }
 
@@ -1337,6 +1340,8 @@ body.modal-open {
   font-size: 0.97em;
   box-shadow: var(--shadow-subtle);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .muse:hover {
@@ -1374,18 +1379,20 @@ body.modal-open {
 }
 
 .muse .quote {
-  margin: 0 0 0.8em;
+  margin: 0 0 1em;
   color: var(--ink-2);
   font-style: italic;
   font-size: 0.98em;
   line-height: 1.5;
+  min-height: 3em;
 }
 
 .muse .muse-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 4px;
+  margin-top: auto;
+  align-self: flex-start;
   padding: 5px 13px;
   font-size: 0.85rem;
   font-family: inherit;
@@ -1418,13 +1425,14 @@ body.modal-open {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
+  align-items: start;
 }
 
 .hobby {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  padding: 24px;
+  padding: 18px 22px;
   box-shadow: var(--shadow-subtle);
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -1433,6 +1441,73 @@ body.modal-open {
   transform: translateY(-2px);
   border-color: var(--line-strong);
   box-shadow: var(--shadow-hover);
+}
+
+.hobby-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.hobby-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-weight: 600;
+}
+
+.hobby-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface-subtle);
+  color: var(--ink);
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.hobby-toggle:hover,
+.hobby-header:hover .hobby-toggle {
+  background: var(--line-strong);
+  border-color: var(--dog);
+  color: var(--dog);
+}
+
+.hobby-toggle[aria-expanded="true"] {
+  background: var(--line-strong);
+  color: var(--dog);
+  border-color: var(--dog);
+  transform: rotate(45deg);
+}
+
+.hobby-body {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  animation: fadeIn 0.2s ease;
+}
+
+.hobby-body p {
+  margin: 0;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+.hobby-body p+p {
+  margin-top: 0.75em;
 }
 
 .hobby h2,
@@ -1858,7 +1933,7 @@ html:not(.js) .site-loader {
   opacity: 1;
   visibility: visible;
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0, 1),
-              visibility 0.4s cubic-bezier(0.4, 0, 0, 1);
+    visibility 0.4s cubic-bezier(0.4, 0, 0, 1);
   pointer-events: auto;
   overflow: hidden;
   will-change: opacity, visibility;
@@ -1881,6 +1956,7 @@ html:not(.js) .site-loader {
   transform-origin: left center;
   transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
 }
+
 .site-loader.loaded::after {
   transform: scaleX(0);
   transform-origin: right center;
@@ -1908,6 +1984,7 @@ html:not(.js) .site-loader {
     opacity: 0;
     transform: translateX(-60px) scale(0.85);
   }
+
   to {
     opacity: 1;
     transform: translateX(0) scale(1);
@@ -1919,10 +1996,12 @@ html:not(.js) .site-loader {
     opacity: 1;
     transform: translateX(0) scale(1);
   }
+
   60% {
     opacity: 1;
     transform: translateX(40vw) scale(1.08);
   }
+
   100% {
     opacity: 0;
     transform: translateX(100vw) scale(0.9);
@@ -1974,10 +2053,12 @@ html:not(.js) .site-loader {
     opacity: 0.18;
     transform: translate(0, 0) scale(1);
   }
+
   50% {
     opacity: 0.08;
     transform: translate(-14px, -6px) scale(1.6);
   }
+
   100% {
     opacity: 0;
     transform: translate(-28px, -12px) scale(0.4);
@@ -2014,6 +2095,7 @@ html:not(.js) .site-loader {
     opacity: 0.3;
     transform: translateX(0) scaleX(1);
   }
+
   100% {
     opacity: 0;
     transform: translateX(-20px) scaleX(0.3);
@@ -2189,7 +2271,7 @@ body[data-page="moti"] .route-bg {
   line-height: 1.2;
 }
 
-.log-entry > .tags {
+.log-entry>.tags {
   margin: 6px 0 1.1em;
 }
 
@@ -3181,6 +3263,7 @@ path.kaomoji-glyph {
   0% {
     transform: translateY(0) scale(1.03, 0.97);
   }
+
   100% {
     transform: translateY(-5px) scale(0.97, 1.03);
   }
