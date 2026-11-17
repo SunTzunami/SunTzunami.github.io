@@ -2,8 +2,8 @@ name: Fetch Garmin Activities
 
 on:
   schedule:
-    # Runs every day at 06:00 UTC (15:00 JST)
-    - cron: "0 6 * * *"
+    # Runs twice daily at 00:00 & 12:00 UTC (09:00 & 21:00 JST)
+    - cron: "0 0,12 * * *"
   workflow_dispatch: # Allow manual trigger
 
 permissions:
