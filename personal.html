@@ -55,7 +55,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="style.css?v=14">
+  <link rel="stylesheet" href="style.css?v=20">
   <script src="script.js?v=7" defer></script>
   <script src="run-modal.js?v=3" defer></script>
   <script src="route-bg.js?v=9" defer></script>
@@ -214,7 +214,8 @@
               height="1200"></a>
           <h3>Kobe Bryant</h3>
           <p class="quote">“Everything negative - pressure, challenges - is all an opportunity for me to rise.”</p>
-          <button type="button" class="muse-toggle" aria-expanded="false" aria-controls="muse-story-kobe">Story +</button>
+          <button type="button" class="muse-toggle" aria-expanded="false" aria-controls="muse-story-kobe">Story
+            +</button>
           <div class="muse-story" id="muse-story-kobe" hidden>
             <p>I gave JEE Mains back in Jan 2019 and had gotten a poor score, I was devastated. Around that time I came
               across Kobe's story and read about his struggles during the 1996 playoffs and how he responded to them
@@ -233,7 +234,8 @@
               height="1200"></a>
           <h3>Maryam Mirzakhani</h3>
           <p class="quote">“The beauty of mathematics only shows itself to more patient followers.”</p>
-          <button type="button" class="muse-toggle" aria-expanded="false" aria-controls="muse-story-maryam">Story +</button>
+          <button type="button" class="muse-toggle" aria-expanded="false" aria-controls="muse-story-maryam">Story
+            +</button>
           <div class="muse-story" id="muse-story-maryam" hidden>
             <p>I heard about her back in 2014, I was in 8th grade and I got to know her as the first woman to win the
               Fields Medal. What I found inspiring about Maryam Mirzakhani wasn’t just the fact that she became the
@@ -250,7 +252,8 @@
               height="1799"></a>
           <h3>Michael Jordan</h3>
           <p class="quote">“Limits, like fears, are often just an illusion.”</p>
-          <button type="button" class="muse-toggle" aria-expanded="false" aria-controls="muse-story-jordan">Story +</button>
+          <button type="button" class="muse-toggle" aria-expanded="false" aria-controls="muse-story-jordan">Story
+            +</button>
           <div class="muse-story" id="muse-story-jordan" hidden>
             <p>I've felt underrated at different points in my life. What I admire about Jordan is the way he seemed to
               turn that feeling into fuel rather than letting it become an excuse. Also, his slightly manic competitive
@@ -263,23 +266,26 @@
     <section class="section">
       <h2>Hobbies</h2>
       <div class="hobby-grid">
-        <article class="hobby" id="hobby-coding">
+        <article class="hobby" id="hobby-coding" style="--hobby-img: url('images/hobbies/coding.jpg');">
           <div class="hobby-header">
             <h3>Coding</h3>
-            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-coding" aria-label="Toggle Coding details">
+            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-coding"
+              aria-label="Toggle Coding details">
               <span class="hobby-toggle-icon" aria-hidden="true">+</span>
             </button>
           </div>
           <div class="hobby-body" id="hobby-body-coding" hidden>
             <p>I like coding because it lets me turn abstract ideas into something concrete: a product, an experiment, a
               simulation.</p>
+            <p>I didn't always like it, though. Back when I was 17, I actually loathed programming classes when we were taught Turbo C++ because it felt frustratingly abstract. That flipped on its head when our teacher assigned a project: I discovered the graphics library and ended up building interactive simulations of stars and light dispersion. Suddenly, the code turned into something visual I could control. For more about those origins, <a href="projects.html#space-light">read the full story here</a>.</p>
           </div>
         </article>
 
-        <article class="hobby" id="hobby-japanese">
+        <article class="hobby" id="hobby-japanese" style="--hobby-img: url('images/hobbies/japanese.jpg?v=3');">
           <div class="hobby-header">
             <h3>Japanese</h3>
-            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-japanese" aria-label="Toggle Japanese details">
+            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-japanese"
+              aria-label="Toggle Japanese details">
               <span class="hobby-toggle-icon" aria-hidden="true">+</span>
             </button>
           </div>
@@ -288,13 +294,19 @@
               makes sense to get fluency in Japanese so as to read books and watch content without the crutch of
               subtitles/translations. Another motivation is that I think learning another language is a good way to keep
               the brain healthy. Working towards an eventual N2, I passed the JLPT N3 in August 2026.</p>
+            <p>Back in December 2023, when I'd been in Japan for barely two months, I bought a second-hand copy of <a
+                href="https://www.goodreads.com/en/book/show/9985112-short-stories-in-japanese" target="_blank"
+                rel="noreferrer"><em>Short Stories in Japanese: New Penguin Parallel Text</em></a> (pictured in the background). At the time, I couldn't understand a single word and it used to take me a grueling 10
+              minutes just to slog through one page. Recently, I can read a page in about 3–4 minutes and have
+              read through the book over 1.5 times.</p>
           </div>
         </article>
 
-        <article class="hobby" id="hobby-reading">
+        <article class="hobby" id="hobby-reading" style="--hobby-img: url('images/hobbies/reading.jpg');">
           <div class="hobby-header">
             <h3>Reading</h3>
-            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-reading" aria-label="Toggle Reading details">
+            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-reading"
+              aria-label="Toggle Reading details">
               <span class="hobby-toggle-icon" aria-hidden="true">+</span>
             </button>
           </div>
@@ -302,53 +314,62 @@
             <p>Most of the books I've read in Japan have been read on my commute - the trains are packed but the
               books are helpful in transporting me to a different realm (flipping pages is a pain though).
               I enjoy reading non-fiction lately, which is funny because as a kid I was never a fan. I usually
-              lean towards behavioral economics/business or biographies, reading Japanese short stories and manga once in
+              lean towards behavioral economics/business or biographies, reading Japanese short stories and manga once
+              in
               a while.
               A lot of the experiments I’ve done started with something I stumbled across in a book.
             </p>
           </div>
         </article>
 
-        <article class="hobby" id="hobby-football">
+        <article class="hobby" id="hobby-football" style="--hobby-img: url('images/hobbies/football.jpg');">
           <div class="hobby-header">
             <h3>Football / Futsal</h3>
-            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-football" aria-label="Toggle Football details">
+            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-football"
+              aria-label="Toggle Football details">
               <span class="hobby-toggle-icon" aria-hidden="true">+</span>
             </button>
           </div>
           <div class="hobby-body" id="hobby-body-football" hidden>
-            <p>I've played football with people from across the world (from every continent sans Antarctica), we might not
+            <p>I've played football with people from across the world (from every continent sans Antarctica), we might
+              not
               know a common language but can convey our messages through the game and smiles.</p>
           </div>
         </article>
 
-        <article class="hobby" id="hobby-cooking">
+        <article class="hobby" id="hobby-cooking" style="--hobby-img: url('images/hobbies/cooking.jpg?v=2');">
           <div class="hobby-header">
             <h3>Cooking</h3>
-            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-cooking" aria-label="Toggle Cooking details">
+            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-cooking"
+              aria-label="Toggle Cooking details">
               <span class="hobby-toggle-icon" aria-hidden="true">+</span>
             </button>
           </div>
           <div class="hobby-body" id="hobby-body-cooking" hidden>
             <p>I like cooking because I get to make something I can immediately share with other people. A lot of what I
-              cook is essentially my mother's cooking, so it is also my favourite way of sharing a little bit of home with
+              cook is essentially my mother's cooking, so it is also my favourite way of sharing a little bit of home
+              with
               people who didn't grow up with the same food.</p>
           </div>
         </article>
 
-        <article class="hobby" id="hobby-running">
+        <article class="hobby" id="hobby-running" style="--hobby-img: url('images/hobbies/running.jpg');">
           <div class="hobby-header">
             <h3>Running</h3>
-            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-running" aria-label="Toggle Running details">
+            <button type="button" class="hobby-toggle" aria-expanded="false" aria-controls="hobby-body-running"
+              aria-label="Toggle Running details">
               <span class="hobby-toggle-icon" aria-hidden="true">+</span>
             </button>
           </div>
           <div class="hobby-body" id="hobby-body-running" hidden>
             <p>I like numbers. I've run roughly <strong id="run-dist-approx">4,400+ km</strong> across <strong
-                id="run-count-approx">900+</strong> runs since <span id="run-since-text">Jan 2024</span>, and I still keep
+                id="run-count-approx">900+</strong> runs since <span id="run-since-text">Jan 2024</span>, and I still
+              keep
               track. I'd like to run a marathon some day, and probably an ultra too. I'm a very lazy runner though, most
-              of my runs are &lt;140BPM as I'm not really training for anything specific. I do run sub 3:50 min km once in
-              a blue moon when an Eminem track, Linkin Park, or a great metal beat (Metallica, Iron Maiden.....) comes on
+              of my runs are &lt;140BPM as I'm not really training for anything specific. I do run sub 3:50 min km once
+              in
+              a blue moon when an Eminem track, Linkin Park, or a great metal beat (Metallica, Iron Maiden.....) comes
+              on
               the playlist.</p>
           </div>
         </article>
@@ -484,7 +505,7 @@
   </main>
 
   <footer class="footer">Last updated: October 2026</footer>
-  <script src="personal-page.js?v=2" defer></script>
+  <script src="personal-page.js?v=4" defer></script>
   <script src="running-charts.js" defer></script>
 </body>
 

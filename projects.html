@@ -21,47 +21,88 @@
   <link rel="preload" href="fonts/newsreader-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <script>
-  document.documentElement.classList.add("js");
-  (function() {
-    function getAutoTimeTheme() {
-      var hour = new Date().getHours();
-      return (hour >= 6 && hour < 18) ? 'light' : 'dark';
-    }
-    window.toggleTheme = function() {
-      var cur = document.documentElement.getAttribute("data-theme") || getAutoTimeTheme();
-      var next = (cur === "dark") ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next);
-      try { localStorage.setItem("theme", next); } catch (e) {}
-      var meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute('content', next === 'dark' ? '#141517' : '#f1f1ee');
-      var btns = document.querySelectorAll(".theme-toggle");
-      btns.forEach(function(b) {
-        var lbl = (next === "dark") ? "Switch to light theme" : "Switch to dark theme";
-        b.setAttribute("aria-label", lbl);
-        b.setAttribute("title", lbl);
-      });
-      if (typeof window.motiReactToTheme === "function") {
-        window.motiReactToTheme();
+    document.documentElement.classList.add("js");
+    (function () {
+      function getAutoTimeTheme() {
+        var hour = new Date().getHours();
+        return (hour >= 6 && hour < 18) ? 'light' : 'dark';
       }
-    };
-    try {
-      var stored = localStorage.getItem("theme");
-      var initial = (stored === "dark" || stored === "light") ? stored : getAutoTimeTheme();
-      document.documentElement.setAttribute("data-theme", initial);
-      var meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute('content', initial === 'dark' ? '#141517' : '#f1f1ee');
-    } catch (e) {
-      document.documentElement.setAttribute("data-theme", getAutoTimeTheme());
-    }
-  })();
+      window.toggleTheme = function () {
+        var cur = document.documentElement.getAttribute("data-theme") || getAutoTimeTheme();
+        var next = (cur === "dark") ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        try { localStorage.setItem("theme", next); } catch (e) { }
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', next === 'dark' ? '#141517' : '#f1f1ee');
+        var btns = document.querySelectorAll(".theme-toggle");
+        btns.forEach(function (b) {
+          var lbl = (next === "dark") ? "Switch to light theme" : "Switch to dark theme";
+          b.setAttribute("aria-label", lbl);
+          b.setAttribute("title", lbl);
+        });
+        if (typeof window.motiReactToTheme === "function") {
+          window.motiReactToTheme();
+        }
+      };
+      try {
+        var stored = localStorage.getItem("theme");
+        var initial = (stored === "dark" || stored === "light") ? stored : getAutoTimeTheme();
+        document.documentElement.setAttribute("data-theme", initial);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', initial === 'dark' ? '#141517' : '#f1f1ee');
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", getAutoTimeTheme());
+      }
+    })();
   </script>
-  <link rel="stylesheet" href="style.css?v=14">
+  <link rel="stylesheet" href="style.css?v=20">
   <script src="script.js?v=7" defer></script>
   <script src="route-bg.js?v=9" defer></script>
 </head>
 
 <body data-page="projects">
-<div id="site-loader" class="site-loader" aria-label="Loading"><div class="site-loader-box"><div class="site-loader-walker"><svg class="site-loader-svg" viewBox="0 0 7363 2180" aria-hidden="true" focusable="false"><g transform="translate(0, 1890) scale(1, -1)" fill="currentColor"><g class="runner-pose-a"><path d="M422 135Q472 135 501.0 165.5Q530 196 530 230Q530 274 497.0 307.0Q464 340 420 340Q370 340 340.0 317.0Q310 294 310 230Q310 182 340.0 158.5Q370 135 422 135ZM191 457 586 1493H815L1384 0H1174L700 1294L410 496Q536 488 615.5 410.0Q695 332 695 230Q695 115 611.5 42.5Q528 -30 422 -30Q326 -31 238.0 47.0Q150 125 150 230Q150 351 191 457Z" /><path d="M635 1554Q501 1324 436.0 1099.0Q371 874 371 643Q371 412 436.5 185.5Q502 -41 635 -270H475Q325 -35 250.5 192.0Q176 419 176 643Q176 866 250.0 1092.0Q324 1318 475 1554Z" transform="translate(1401, 0)" /><path d="M217 1547H421V1342H217ZM715 1871H919V1666H715ZM1204 1218 273 746 1204 272ZM1374 0 119 632V860L1374 1493Z" transform="translate(2851, 0)" /><path d="M164 1554H324Q474 1318 548.5 1092.0Q623 866 623 643Q623 419 548.5 192.0Q474 -35 324 -270H164Q297 -41 362.5 185.5Q428 412 428 643Q428 874 362.5 1099.0Q297 1324 164 1554Z" transform="translate(5077, 0)" /><path d="M349 989Q399 989 428.0 1019.5Q457 1050 457 1084Q457 1128 424.0 1161.0Q391 1194 347 1194Q297 1194 267.0 1171.0Q237 1148 237 1084Q237 1036 267.0 1012.5Q297 989 349 989ZM621 1048Q609 951 527.0 887.5Q445 824 349 824Q240 824 158.5 904.5Q77 985 77 1084Q77 1226 164.0 1290.5Q251 1355 322 1355Q387 1355 461 1318L1368 860V632L113 0V182L1214 746Z" transform="translate(5876, 0)" /></g><g class="runner-pose-b"><path d="M349 989Q399 989 428.0 1019.5Q457 1050 457 1084Q457 1128 424.0 1161.0Q391 1194 347 1194Q297 1194 267.0 1171.0Q237 1148 237 1084Q237 1036 267.0 1012.5Q297 989 349 989ZM621 1048Q609 951 527.0 887.5Q445 824 349 824Q240 824 158.5 904.5Q77 985 77 1084Q77 1226 164.0 1290.5Q251 1355 322 1355Q387 1355 461 1318L1368 860V632L113 0V182L1214 746Z" /><path d="M635 1554Q501 1324 436.0 1099.0Q371 874 371 643Q371 412 436.5 185.5Q502 -41 635 -270H475Q325 -35 250.5 192.0Q176 419 176 643Q176 866 250.0 1092.0Q324 1318 475 1554Z" transform="translate(1487, 0)" /><path d="M217 1547H421V1342H217ZM715 1871H919V1666H715ZM1204 1218 273 746 1204 272ZM1374 0 119 632V860L1374 1493Z" transform="translate(2937, 0)" /><path d="M164 1554H324Q474 1318 548.5 1092.0Q623 866 623 643Q623 419 548.5 192.0Q474 -35 324 -270H164Q297 -41 362.5 185.5Q428 412 428 643Q428 874 362.5 1099.0Q297 1324 164 1554Z" transform="translate(5163, 0)" /><path d="M422 135Q472 135 501.0 165.5Q530 196 530 230Q530 274 497.0 307.0Q464 340 420 340Q370 340 340.0 317.0Q310 294 310 230Q310 182 340.0 158.5Q370 135 422 135ZM191 457 586 1493H815L1384 0H1174L700 1294L410 496Q536 488 615.5 410.0Q695 332 695 230Q695 115 611.5 42.5Q528 -30 422 -30Q326 -31 238.0 47.0Q150 125 150 230Q150 351 191 457Z" transform="translate(5962, 0)" /></g></g></svg></div><div class="site-loader-shadow"></div></div></div>
+  <div id="site-loader" class="site-loader" aria-label="Loading">
+    <div class="site-loader-box">
+      <div class="site-loader-walker"><svg class="site-loader-svg" viewBox="0 0 7363 2180" aria-hidden="true"
+          focusable="false">
+          <g transform="translate(0, 1890) scale(1, -1)" fill="currentColor">
+            <g class="runner-pose-a">
+              <path
+                d="M422 135Q472 135 501.0 165.5Q530 196 530 230Q530 274 497.0 307.0Q464 340 420 340Q370 340 340.0 317.0Q310 294 310 230Q310 182 340.0 158.5Q370 135 422 135ZM191 457 586 1493H815L1384 0H1174L700 1294L410 496Q536 488 615.5 410.0Q695 332 695 230Q695 115 611.5 42.5Q528 -30 422 -30Q326 -31 238.0 47.0Q150 125 150 230Q150 351 191 457Z" />
+              <path
+                d="M635 1554Q501 1324 436.0 1099.0Q371 874 371 643Q371 412 436.5 185.5Q502 -41 635 -270H475Q325 -35 250.5 192.0Q176 419 176 643Q176 866 250.0 1092.0Q324 1318 475 1554Z"
+                transform="translate(1401, 0)" />
+              <path
+                d="M217 1547H421V1342H217ZM715 1871H919V1666H715ZM1204 1218 273 746 1204 272ZM1374 0 119 632V860L1374 1493Z"
+                transform="translate(2851, 0)" />
+              <path
+                d="M164 1554H324Q474 1318 548.5 1092.0Q623 866 623 643Q623 419 548.5 192.0Q474 -35 324 -270H164Q297 -41 362.5 185.5Q428 412 428 643Q428 874 362.5 1099.0Q297 1324 164 1554Z"
+                transform="translate(5077, 0)" />
+              <path
+                d="M349 989Q399 989 428.0 1019.5Q457 1050 457 1084Q457 1128 424.0 1161.0Q391 1194 347 1194Q297 1194 267.0 1171.0Q237 1148 237 1084Q237 1036 267.0 1012.5Q297 989 349 989ZM621 1048Q609 951 527.0 887.5Q445 824 349 824Q240 824 158.5 904.5Q77 985 77 1084Q77 1226 164.0 1290.5Q251 1355 322 1355Q387 1355 461 1318L1368 860V632L113 0V182L1214 746Z"
+                transform="translate(5876, 0)" />
+            </g>
+            <g class="runner-pose-b">
+              <path
+                d="M349 989Q399 989 428.0 1019.5Q457 1050 457 1084Q457 1128 424.0 1161.0Q391 1194 347 1194Q297 1194 267.0 1171.0Q237 1148 237 1084Q237 1036 267.0 1012.5Q297 989 349 989ZM621 1048Q609 951 527.0 887.5Q445 824 349 824Q240 824 158.5 904.5Q77 985 77 1084Q77 1226 164.0 1290.5Q251 1355 322 1355Q387 1355 461 1318L1368 860V632L113 0V182L1214 746Z" />
+              <path
+                d="M635 1554Q501 1324 436.0 1099.0Q371 874 371 643Q371 412 436.5 185.5Q502 -41 635 -270H475Q325 -35 250.5 192.0Q176 419 176 643Q176 866 250.0 1092.0Q324 1318 475 1554Z"
+                transform="translate(1487, 0)" />
+              <path
+                d="M217 1547H421V1342H217ZM715 1871H919V1666H715ZM1204 1218 273 746 1204 272ZM1374 0 119 632V860L1374 1493Z"
+                transform="translate(2937, 0)" />
+              <path
+                d="M164 1554H324Q474 1318 548.5 1092.0Q623 866 623 643Q623 419 548.5 192.0Q474 -35 324 -270H164Q297 -41 362.5 185.5Q428 412 428 643Q428 874 362.5 1099.0Q297 1324 164 1554Z"
+                transform="translate(5163, 0)" />
+              <path
+                d="M422 135Q472 135 501.0 165.5Q530 196 530 230Q530 274 497.0 307.0Q464 340 420 340Q370 340 340.0 317.0Q310 294 310 230Q310 182 340.0 158.5Q370 135 422 135ZM191 457 586 1493H815L1384 0H1174L700 1294L410 496Q536 488 615.5 410.0Q695 332 695 230Q695 115 611.5 42.5Q528 -30 422 -30Q326 -31 238.0 47.0Q150 125 150 230Q150 351 191 457Z"
+                transform="translate(5962, 0)" />
+            </g>
+          </g>
+        </svg></div>
+      <div class="site-loader-shadow"></div>
+    </div>
+  </div>
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
     <nav class="navbar" aria-label="Primary">
@@ -141,9 +182,16 @@
         <a href="SwamiSajagCV2026.pdf">CV</a>
       </div>
       <div class="nav-controls">
-        <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
-          <svg class="theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-          <svg class="theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle theme"
+          title="Toggle theme">
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+          </svg>
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg>
         </button>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
       </div>
@@ -169,7 +217,8 @@
             <p class="overlay-desc">Turning photos and sketches into playable retro arcade games in real time.</p>
             <div class="overlay-actions">
               <button type="button" class="btn-read" aria-label="Read full story"><span>+</span> Read</button>
-              <a href="https://github.com/henrihal/DeepMindHackathon" target="_blank" rel="noreferrer" class="btn-ext">GitHub</a>
+              <a href="https://github.com/henrihal/DeepMindHackathon" target="_blank" rel="noreferrer"
+                class="btn-ext">GitHub</a>
             </div>
           </div>
         </div>
@@ -179,25 +228,28 @@
         </div>
         <div class="full-content" hidden>
 
-        <div class="project-title-row">
-          <h2>Anything Arcade <span class="circa">circa 2026</span></h2><span class="tags">Game Development ·
-            Multimodal AI · Hackathon</span>
-        </div>
-        <blockquote>
-          <p>“Sheldon, it's just a game.”<br>“No, Leonard. It's a digital representation of my hopes, my dreams, and
-            my countless hours of clicking!”</p>
-        </blockquote>
-        <div class="project-copy">
-          <p>For the Gemini 3 Tokyo Hackathon, we had to build a game and decided to make one where people could create their own characters, and Nano Banana made it possible to turn uploaded images into usable game assets.</p>
-          <p>By the end, we had working code wherein we could upload images of Shohei Ohtani and Cristiano Ronaldo and could generate their sprites and get em working in the game.</p>
-        </div>
-        <div class="project-media"><img src="images/projects/gemini_hackathon.png"
-            alt="Anything Arcade in-game screenshot" loading="lazy" decoding="async" width="1718" height="1166">
-          <div class="caption">In-game screenshot.</div>
-        </div>
-        <p class="project-links"><a href="https://github.com/henrihal/DeepMindHackathon" target="_blank"
-            rel="noreferrer">GitHub</a></p>
-      
+          <div class="project-title-row">
+            <h2>Anything Arcade <span class="circa">circa 2026</span></h2><span class="tags">Game Development ·
+              Multimodal AI · Hackathon</span>
+          </div>
+          <blockquote>
+            <p>“Sheldon, it's just a game.”<br>“No, Leonard. It's a digital representation of my hopes, my dreams, and
+              my countless hours of clicking!”</p>
+          </blockquote>
+          <div class="project-copy">
+            <p>For the Gemini 3 Tokyo Hackathon, we had to build a game and decided to make one where people could
+              create their own characters, and Nano Banana made it possible to turn uploaded images into usable game
+              assets.</p>
+            <p>By the end, we had working code wherein we could upload images of Shohei Ohtani and Cristiano Ronaldo and
+              could generate their sprites and get em working in the game.</p>
+          </div>
+          <div class="project-media"><img src="images/projects/gemini_hackathon.png"
+              alt="Anything Arcade in-game screenshot" loading="lazy" decoding="async" width="1718" height="1166">
+            <div class="caption">In-game screenshot.</div>
+          </div>
+          <p class="project-links"><a href="https://github.com/henrihal/DeepMindHackathon" target="_blank"
+              rel="noreferrer">GitHub</a></p>
+
         </div>
       </article>
 
@@ -213,7 +265,8 @@
             <p class="overlay-desc">Molecular visualization engine and simulations for high-performance graphics.</p>
             <div class="overlay-actions">
               <button type="button" class="btn-read" aria-label="Read full story"><span>+</span> Read</button>
-              <a href="https://github.com/SunTzunami/FURY_experimental" target="_blank" rel="noreferrer" class="btn-ext">Experiments</a>
+              <a href="https://github.com/SunTzunami/FURY_experimental" target="_blank" rel="noreferrer"
+                class="btn-ext">Experiments</a>
             </div>
           </div>
         </div>
@@ -223,38 +276,48 @@
         </div>
         <div class="full-content" hidden>
 
-        <div class="project-year" aria-hidden="true">2021</div>
-        <div class="project-title-row">
-          <h2>FURY: Google Summer of Code <span class="circa">circa 2021</span></h2><span class="tags">Open Source ·
-            Scientific Computing · Visualization</span>
-        </div>
-        <blockquote>
-          <p>“What I cannot create, I do not understand.”</p><cite>- Richard Feynman</cite>
-        </blockquote>
-        <div class="project-copy">
-          <p>We have a strong open-source culture at IIT Roorkee; I personally knew seniors who’d participated in Outreachy and GSoC.</p>
-          <p>When COVID hit back in 2020, I’d learned Python and was interested in computer graphics (around the time I made the <a href="#transience">Itachi animation</a>). I came across FURY in GSoC and found it pretty cool.</p>
-          <p>I started contributing back in the winter of 2020 by performing bug fixes and creating some demos. I wrote a proposal on how I can build an MVP to showcase some protein visualizations and I received acceptance back in May 2021. I was really excited to contribute.</p>
-          <p>I contributed by coding some MVPs to show how the library can be used for protein visualization, and also made other smaller demos.</p>
-          <p>An incident I remember vividly is when I was working on animating a time-series function where the colormap changes as per the change in the z-dimension of the function, but I was unable to figure out how to code the logic to update the colormaps for this dynamic setting as there was no precedent. One day the solution came when I was taking a shower, and I still remember how excited I was when it worked!</p>
-          <p>I learned how much open-source work is about things that aren't really “coding”: writing documentation, keeping code clean, and creating demos/mocks to help people who use what you've built.</p>
-        </div>
-        <div class="project-media">
-          <img src="images/projects/brownian.gif" alt="Brownian motion visualization" loading="lazy" decoding="async"
-            width="600" height="600">
-          <div class="caption">Brownian motion particle simulation rendered with FURY.</div>
-        </div>
-        <p class="project-links"><a href="https://github.com/SunTzunami/FURY_experimental" target="_blank"
-            rel="noreferrer">Experiments</a> · <a href="https://github.com/fury-gl/fury/pull/452" target="_blank"
-            rel="noreferrer">FURY PR #452</a> · <a
-            href="https://gist.github.com/SunTzunami/a46467157483b798342016b1f77903ae" target="_blank"
-            rel="noreferrer">Final report</a> · <a href="https://blogs.python-gsoc.org/en/suntzunamis-blog/"
-            target="_blank" rel="noreferrer">GSoC blog</a></p>
-      
+          <div class="project-year" aria-hidden="true">2021</div>
+          <div class="project-title-row">
+            <h2>FURY: Google Summer of Code <span class="circa">circa 2021</span></h2><span class="tags">Open Source ·
+              Scientific Computing · Visualization</span>
+          </div>
+          <blockquote>
+            <p>“What I cannot create, I do not understand.”</p><cite>- Richard Feynman</cite>
+          </blockquote>
+          <div class="project-copy">
+            <p>We have a strong open-source culture at IIT Roorkee; I personally knew seniors who’d participated in
+              Outreachy and GSoC.</p>
+            <p>When COVID hit back in 2020, I’d learned Python and was interested in computer graphics (around the time
+              I made the <a href="#transience">Itachi animation</a>). I came across FURY in GSoC and found it pretty
+              cool.</p>
+            <p>I started contributing back in the winter of 2020 by performing bug fixes and creating some demos. I
+              wrote a proposal on how I can build an MVP to showcase some protein visualizations and I received
+              acceptance back in May 2021. I was really excited to contribute.</p>
+            <p>I contributed by coding some MVPs to show how the library can be used for protein visualization, and also
+              made other smaller demos.</p>
+            <p>An incident I remember vividly is when I was working on animating a time-series function where the
+              colormap changes as per the change in the z-dimension of the function, but I was unable to figure out how
+              to code the logic to update the colormaps for this dynamic setting as there was no precedent. One day the
+              solution came when I was taking a shower, and I still remember how excited I was when it worked!</p>
+            <p>I learned how much open-source work is about things that aren't really “coding”: writing documentation,
+              keeping code clean, and creating demos/mocks to help people who use what you've built.</p>
+          </div>
+          <div class="project-media">
+            <img src="images/projects/brownian.gif" alt="Brownian motion visualization" loading="lazy" decoding="async"
+              width="600" height="600">
+            <div class="caption">Brownian motion particle simulation rendered with FURY.</div>
+          </div>
+          <p class="project-links"><a href="https://github.com/SunTzunami/FURY_experimental" target="_blank"
+              rel="noreferrer">Experiments</a> · <a href="https://github.com/fury-gl/fury/pull/452" target="_blank"
+              rel="noreferrer">FURY PR #452</a> · <a
+              href="https://gist.github.com/SunTzunami/a46467157483b798342016b1f77903ae" target="_blank"
+              rel="noreferrer">Final report</a> · <a href="https://blogs.python-gsoc.org/en/suntzunamis-blog/"
+              target="_blank" rel="noreferrer">GSoC blog</a></p>
+
         </div>
       </article>
 
-            <article class="project-card" id="heart-rate">
+      <article class="project-card" id="heart-rate">
         <div class="thumbnail-wrapper">
           <img src="images/projects/rhr.png" alt="Exercising & Heart Rate" loading="lazy" decoding="async">
           <div class="thumbnail-overlay">
@@ -276,30 +339,45 @@
         </div>
         <div class="full-content" hidden>
 
-        <div class="project-year" aria-hidden="true">2020</div>
-        <div class="project-title-row">
-          <h2>Is Exercising Good for One's Heart? <span class="circa">circa 2020</span></h2><span
-            class="tags">Statistics · Self-Experiment · Health Data</span>
-        </div>
-        <blockquote>
-          <p>“The important thing is not to stop questioning.”</p><cite>- Albert Einstein</cite>
-        </blockquote>
-        <div class="project-copy">
-          <p>Back in my third semester at IITR (summer of 2020), my dad had gifted me a Fitbit at a time when fitness trackers were still a rarity in India. I had watched <a href="https://myanimelist.net/anime/263/Hajime_no_Ippo" target="_blank" rel="noreferrer">Hajime no Ippo</a> around the same time and got inspired to start running. I started running almost daily and tracking my health metrics with the Fitbit.</p>
-          <p>After a few months of consistent running, I observed that my resting heart rate (RHR) had decreased from about mid 60s to late 50s. I read online that it's a sign of improving cardiovascular health and that RHR could be segregated into different ranges (60s being normal, late-50s being athletic and so on....), I was stoked to see that I'd moved into the slightly healthier band! But I wanted to be certain and in order to test this hypothesis, I extracted exercise data from my Fitbit records and evaluated its relationship with RHR by writing python scripts to generate scatter plots and compute correlation coefficients between rhr and cumulative exercise. Both of these indicated a clear negative trend and I was ecstatic to see quantified proof of improving cardiovascular health. Watching an everyday observation become a question that data could answer sparked my interest in applied data science.</p>
-          <p>It was a very small experiment, and in retrospect it was also statistically kinda naive as there were plenty of possible confounders, and an N=1 observational analysis certainly cannot establish causality.</p>
-          <p>I kept tracking my resting heart rate afterward too. During COVID, a sudden change in the metric helped alert me that something was wrong, and I self-isolated rather than risk passing it on to my family.</p>
-        </div>
-        <div class="project-media">
-          <img src="images/projects/rhr.png" alt="Resting heart rate versus cumulative exercise" loading="lazy"
-            decoding="async" width="494" height="342">
-          <div class="caption">Resting heart rate plotted against cumulative cardiovascular exercise.</div>
-        </div>
-      
+          <div class="project-year" aria-hidden="true">2020</div>
+          <div class="project-title-row">
+            <h2>Is Exercising Good for One's Heart? <span class="circa">circa 2020</span></h2><span
+              class="tags">Statistics · Self-Experiment · Health Data</span>
+          </div>
+          <blockquote>
+            <p>“The important thing is not to stop questioning.”</p><cite>- Albert Einstein</cite>
+          </blockquote>
+          <div class="project-copy">
+            <p>Back in my third semester at IITR (summer of 2020), my dad had gifted me a Fitbit at a time when fitness
+              trackers were still a rarity in India. I had watched <a
+                href="https://myanimelist.net/anime/263/Hajime_no_Ippo" target="_blank" rel="noreferrer">Hajime no
+                Ippo</a> around the same time and got inspired to start running. I started running almost daily and
+              tracking my health metrics with the Fitbit.</p>
+            <p>After a few months of consistent running, I observed that my resting heart rate (RHR) had decreased from
+              about mid 60s to late 50s. I read online that it's a sign of improving cardiovascular health and that RHR
+              could be segregated into different ranges (60s being normal, late-50s being athletic and so on....), I was
+              stoked to see that I'd moved into the slightly healthier band! But I wanted to be certain and in order to
+              test this hypothesis, I extracted exercise data from my Fitbit records and evaluated its relationship with
+              RHR by writing python scripts to generate scatter plots and compute correlation coefficients between rhr
+              and cumulative exercise. Both of these indicated a clear negative trend and I was ecstatic to see
+              quantified proof of improving cardiovascular health. Watching an everyday observation become a question
+              that data could answer sparked my interest in applied data science.</p>
+            <p>It was a very small experiment, and in retrospect it was also statistically kinda naive as there were
+              plenty of possible confounders, and an N=1 observational analysis certainly cannot establish causality.
+            </p>
+            <p>I kept tracking my resting heart rate afterward too. During COVID, a sudden change in the metric helped
+              alert me that something was wrong, and I self-isolated rather than risk passing it on to my family.</p>
+          </div>
+          <div class="project-media">
+            <img src="images/projects/rhr.png" alt="Resting heart rate versus cumulative exercise" loading="lazy"
+              decoding="async" width="494" height="342">
+            <div class="caption">Resting heart rate plotted against cumulative cardiovascular exercise.</div>
+          </div>
+
         </div>
       </article>
 
-            <article class="project-card" id="transience">
+      <article class="project-card" id="transience">
         <div class="thumbnail-wrapper">
           <img src="images/projects/transience.gif" alt="Transience: Pixel Animation" loading="lazy" decoding="async">
           <div class="thumbnail-overlay">
@@ -311,7 +389,8 @@
             <p class="overlay-desc">Handcrafted pixel art loop and cellular animation featured by Python Arcade.</p>
             <div class="overlay-actions">
               <button type="button" class="btn-read" aria-label="Read full story"><span>+</span> Read</button>
-              <a href="https://github.com/SunTzunami/Transience_animation_PyArcade" target="_blank" rel="noreferrer" class="btn-ext">GitHub</a>
+              <a href="https://github.com/SunTzunami/Transience_animation_PyArcade" target="_blank" rel="noreferrer"
+                class="btn-ext">GitHub</a>
             </div>
           </div>
         </div>
@@ -321,35 +400,39 @@
         </div>
         <div class="full-content" hidden>
 
-        <div class="project-title-row">
-          <h2>Transience <span class="circa">circa 2020</span></h2><span class="tags">Pixel Art · Animation · Open
-            Source</span>
-        </div>
-        <blockquote>
-          <p>“A place where someone still thinks about you is a place you can call home.”</p><cite>- Jiraiya</cite>
-        </blockquote>
-        <div class="project-copy">
-          <p>I had just finished watching Naruto and found Itachi really really cool.</p>
-          <p>I've also been fascinated by pixel art since I was a kid, partly because I spent many hours playing games like double dragon, adventure island, Mario and later on Pokemon emerald.</p>
-          <p>So I decided to combine the two.</p>
-          <p>I drew all the pixel art myself in Piskel, then built the animation using Python Arcade. Along the way I learned how to draw pixel art, edit video, work with animation, and read enough documentation to make the whole thing work.</p>
-          <p>Seeing it featured by Python Arcade was especially satisfying (perhaps my very first open source contribution? If it can be counted as such).</p>
-        </div>
-        <div class="project-media">
-          <img src="images/projects/transience.gif" alt="Transience animation preview" loading="lazy" decoding="async"
-            width="640" height="480">
-          <div class="caption">Preview of the video.</div>
-        </div>
-        <p class="project-links"><a
-            href="https://api.arcade.academy/en/stable/community/games/sample_games.html#transcience-animation"
-            target="_blank" rel="noreferrer">Featured by Python Arcade</a> · <a
-            href="https://github.com/SunTzunami/Transience_animation_PyArcade" target="_blank"
-            rel="noreferrer">GitHub</a></p>
-      
+          <div class="project-title-row">
+            <h2>Transience <span class="circa">circa 2020</span></h2><span class="tags">Pixel Art · Animation · Open
+              Source</span>
+          </div>
+          <blockquote>
+            <p>“A place where someone still thinks about you is a place you can call home.”</p><cite>- Jiraiya</cite>
+          </blockquote>
+          <div class="project-copy">
+            <p>I had just finished watching Naruto and found Itachi really really cool.</p>
+            <p>I've also been fascinated by pixel art since I was a kid, partly because I spent many hours playing games
+              like double dragon, adventure island, Mario and later on Pokemon emerald.</p>
+            <p>So I decided to combine the two.</p>
+            <p>I drew all the pixel art myself in Piskel, then built the animation using Python Arcade. Along the way I
+              learned how to draw pixel art, edit video, work with animation, and read enough documentation to make the
+              whole thing work.</p>
+            <p>Seeing it featured by Python Arcade was especially satisfying (perhaps my very first open source
+              contribution? If it can be counted as such).</p>
+          </div>
+          <div class="project-media">
+            <img src="images/projects/transience.gif" alt="Transience animation preview" loading="lazy" decoding="async"
+              width="640" height="480">
+            <div class="caption">Preview of the video.</div>
+          </div>
+          <p class="project-links"><a
+              href="https://api.arcade.academy/en/stable/community/games/sample_games.html#transcience-animation"
+              target="_blank" rel="noreferrer">Featured by Python Arcade</a> · <a
+              href="https://github.com/SunTzunami/Transience_animation_PyArcade" target="_blank"
+              rel="noreferrer">GitHub</a></p>
+
         </div>
       </article>
 
-            <article class="project-card" id="space-light">
+      <article class="project-card" id="space-light">
         <div class="thumbnail-wrapper">
           <img src="images/projects/dispersion.gif" alt="Space and Light" loading="lazy" decoding="async">
           <div class="thumbnail-overlay">
@@ -358,10 +441,12 @@
               <span>C++ · Computer Graphics</span>
             </div>
             <h3 class="overlay-title">Space and Light</h3>
-            <p class="overlay-desc">Interactive C++ graphics simulations of light dispersion, solar rays, and stellar evolution.</p>
+            <p class="overlay-desc">Interactive C++ graphics simulations of light dispersion, solar rays, and stellar
+              evolution.</p>
             <div class="overlay-actions">
               <button type="button" class="btn-read" aria-label="Read full story"><span>+</span> Read</button>
-              <a href="https://github.com/SunTzunami/Space_and_Light" target="_blank" rel="noreferrer" class="btn-ext">GitHub</a>
+              <a href="https://github.com/SunTzunami/Space_and_Light" target="_blank" rel="noreferrer"
+                class="btn-ext">GitHub</a>
             </div>
           </div>
         </div>
@@ -371,37 +456,47 @@
         </div>
         <div class="full-content" hidden>
 
-        <div class="project-year" aria-hidden="true">2018–2019</div>
-        <div class="project-title-row">
-          <h2>Space and Light <span class="circa">circa 2018–2019</span></h2><span class="tags">C++ · Computer
-            Graphics · Astronomy · First Project</span>
-        </div>
-        <div class="project-copy">
-          <p>In 2018-19, when I was 17ish, I absolutely loathed programming classes.</p>
-          <p>We were using Turbo C++ (which I believe was the rage back in the Cretaceous), and programming felt frustratingly abstract to me. I couldn't really see what any of it was useful for.</p>
-          <p>Then our teacher asked us to make a project.</p>
-          <p>I liked math and science, and I was preparing for university entrance exams (which were math and science), so I thought: why not make something related to science?</p>
-          <p>I found the graphics library, started experimenting, and ended up building an animation that rendered stars and the Milky Way.</p>
-          <p>For the first time, the things we'd been learning in class (pointers, classes, abstraction, and all the rest) suddenly became useful parts of something I could actually see.</p>
-          <p>I got so engrossed in the project that I'd spend my lunch breaks in the computer lab, stuck to computer screen, trying to debug cpp code on ancient 80s era compilers, and ended up spending the entire holidays working on it.</p>
-          <p>My teacher was so surprised by the final result that she initially didn't believe I'd made it myself (as I was not exactly known for being a fan of programming back then).</p>
-          <p>That project completely changed how I thought about programming.</p>
-          <p>I also built a small quiz with a dynamic timing system, where faster answers earned more points, along with a leaderboard.</p>
-          <p>In retrospect, this project to me was what I presume LLMs are for most people (especially non-CS people), ability to communicate with a machine in written language and getting it to do what you want it to do - It felt magical!</p>
-        </div>
-        <div class="media-grid three">
-          <img src="images/projects/dispersion.gif" alt="Light dispersion simulation" loading="lazy" decoding="async"
-            width="640" height="480">
-          <img src="images/projects/sunlight.gif" alt="Sunlight simulation" loading="lazy" decoding="async" width="640"
-            height="480">
-          <img src="images/projects/redgiant.gif" alt="Red giant simulation" loading="lazy" decoding="async" width="640"
-            height="480">
-        </div>
-        <div class="caption">C++ graphics simulations: dispersion of light, sunlight, and red giant evolution.
-        </div>
-        <p class="project-links"><a href="https://github.com/SunTzunami/Space_and_Light" target="_blank"
-            rel="noreferrer">GitHub</a></p>
-      
+          <div class="project-year" aria-hidden="true">2018–2019</div>
+          <div class="project-title-row">
+            <h2>Space and Light <span class="circa">circa 2018–2019</span></h2><span class="tags">C++ · Computer
+              Graphics · Astronomy · First Project</span>
+          </div>
+          <div class="project-copy">
+            <p>In 2018-19, when I was 17ish, I absolutely loathed programming classes.</p>
+            <p>We were using Turbo C++ (which I believe was the rage back in the Cretaceous), and programming felt
+              frustratingly abstract to me. I couldn't really see what any of it was useful for.</p>
+            <p>Then our teacher asked us to make a project.</p>
+            <p>I liked math and science, and I was preparing for university entrance exams (which were math and
+              science), so I thought: why not make something related to science?</p>
+            <p>I found the graphics library, started experimenting, and ended up building an animation that rendered
+              stars and the Milky Way.</p>
+            <p>For the first time, the things we'd been learning in class (pointers, classes, abstraction, and all the
+              rest) suddenly became useful parts of something I could actually see.</p>
+            <p>I got so engrossed in the project that I'd spend my lunch breaks in the computer lab, stuck to computer
+              screen, trying to debug cpp code on ancient 80s era compilers, and ended up spending the entire holidays
+              working on it.</p>
+            <p>My teacher was so surprised by the final result that she initially didn't believe I'd made it myself (as
+              I was not exactly known for being a fan of programming back then).</p>
+            <p>That project completely changed how I thought about programming.</p>
+            <p>I also built a small quiz with a dynamic timing system, where faster answers earned more points, along
+              with a leaderboard.</p>
+            <p>In retrospect, this project to me was what I presume LLMs are for most people (especially non-CS people),
+              ability to communicate with a machine in written language and getting it to do what you want it to do - It
+              felt magical!</p>
+          </div>
+          <div class="media-grid three">
+            <img src="images/projects/dispersion.gif" alt="Light dispersion simulation" loading="lazy" decoding="async"
+              width="640" height="480">
+            <img src="images/projects/sunlight.gif" alt="Sunlight simulation" loading="lazy" decoding="async"
+              width="640" height="480">
+            <img src="images/projects/redgiant.gif" alt="Red giant simulation" loading="lazy" decoding="async"
+              width="640" height="480">
+          </div>
+          <div class="caption">C++ graphics simulations: dispersion of light, sunlight, and red giant evolution.
+          </div>
+          <p class="project-links"><a href="https://github.com/SunTzunami/Space_and_Light" target="_blank"
+              rel="noreferrer">GitHub</a></p>
+
         </div>
       </article>
     </div>
@@ -409,7 +504,7 @@
   </main>
 
   <footer class="footer">Last updated: October 2026</footer>
-<script src="modal-reader.js?v=2" defer></script>
+  <script src="modal-reader.js?v=2" defer></script>
 </body>
 
 </html>

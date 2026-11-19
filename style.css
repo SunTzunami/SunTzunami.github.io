@@ -58,11 +58,14 @@ html[data-theme="light"] {
   --ink-3: #62656b;
   --line: #dcdcd5;
   --line-strong: #c2c2b8;
-  --link: #244b68;
-  --link-hover: #0f2c42;
+  --link: #1d6ea8;
+  --link-hover: #124974;
   --dog: #b5771f;
   --dog-light: #dcae6f;
   --dog-tint: rgba(181, 119, 31, 0.08);
+
+  --hobby-wash: transparent;
+  --hobby-img-opacity: 0.16;
 
   --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
   --shadow-card: 0 4px 16px -4px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
@@ -85,6 +88,8 @@ html[data-theme="dark"] {
   --dog: #dcae6f;
   --dog-light: #f3cf97;
   --dog-tint: rgba(220, 174, 111, 0.12);
+  --hobby-wash: linear-gradient(to bottom, var(--surface) 0%, transparent 22%, transparent 78%, var(--surface) 100%);
+  --hobby-img-opacity: 0.28;
   --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.45);
   --shadow-card: 0 4px 16px -4px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.35);
   --shadow-hover: 0 10px 24px -6px rgba(0, 0, 0, 0.65), 0 2px 6px rgba(0, 0, 0, 0.45);
@@ -723,6 +728,72 @@ main>.section:first-child,
   font-size: 0.96em;
   line-height: 1.55;
   margin: 0;
+}
+
+/* Works Grid & Punchy Catchwords */
+.works-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 720px) {
+  .works-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.work-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.work-tagline {
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.work-teasers {
+  list-style: none;
+  margin: auto 0 0 0;
+  padding: 12px 0 0 0;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.work-card h3 a {
+  color: var(--link);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.work-card h3 a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+.work-teasers li {
+  margin: 0;
+}
+
+.teaser-question {
+  display: block;
+  font-size: 0.94rem;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.teaser-question:hover {
+  color: var(--link-hover);
+  text-decoration-color: currentColor;
 }
 
 /* Professional Note */
@@ -1429,12 +1500,43 @@ body.modal-open {
 }
 
 .hobby {
+  position: relative;
+  overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   padding: 18px 22px;
   box-shadow: var(--shadow-subtle);
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  isolation: isolate;
+}
+
+/* Background photo layer */
+.hobby::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--hobby-img, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 0.35s ease, transform 0.4s ease;
+  pointer-events: none;
+  z-index: -2;
+}
+
+/* Soft light wash overlay for perfect contrast & readability */
+.hobby::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--hobby-wash);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .hobby:hover {
@@ -1443,7 +1545,28 @@ body.modal-open {
   box-shadow: var(--shadow-hover);
 }
 
+/* Reveal picture as light background on expand */
+.hobby.is-expanded,
+.hobby:has(.hobby-toggle[aria-expanded="true"]) {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-hover);
+}
+
+.hobby.is-expanded::before,
+.hobby:has(.hobby-toggle[aria-expanded="true"])::before {
+  opacity: var(--hobby-img-opacity);
+  transform: scale(1);
+}
+
+.hobby.is-expanded::after,
+.hobby:has(.hobby-toggle[aria-expanded="true"])::after {
+  opacity: 1;
+}
+
+
 .hobby-header {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1494,6 +1617,8 @@ body.modal-open {
 }
 
 .hobby-body {
+  position: relative;
+  z-index: 1;
   margin-top: 14px;
   padding-top: 14px;
   border-top: 1px dashed var(--line);
@@ -1504,6 +1629,12 @@ body.modal-open {
   margin: 0;
   color: var(--ink-2);
   line-height: 1.6;
+}
+
+.hobby.is-expanded .hobby-body p,
+.hobby:has(.hobby-toggle[aria-expanded="true"]) .hobby-body p {
+  color: var(--ink);
+  text-shadow: 0 1px 2px var(--surface);
 }
 
 .hobby-body p+p {

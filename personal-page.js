@@ -216,6 +216,7 @@
             var h = b.closest('.hobby');
             var t = h ? h.querySelector('.hobby-toggle') : null;
             if (t) t.setAttribute('aria-expanded', 'false');
+            if (h) h.classList.remove('is-expanded');
           });
         }
       });
@@ -234,10 +235,11 @@
       if (toggle.dataset.hobbyBound) return;
       toggle.dataset.hobbyBound = 'true';
 
-      function toggleHobby() {
-        var isHidden = body.hidden;
-        body.hidden = !isHidden;
-        toggle.setAttribute('aria-expanded', String(isHidden));
+      function toggleHobby(expand) {
+        var isHidden = (typeof expand === 'boolean') ? !expand : !body.hidden;
+        body.hidden = isHidden;
+        toggle.setAttribute('aria-expanded', String(!isHidden));
+        hobby.classList.toggle('is-expanded', !isHidden);
       }
 
       toggle.addEventListener('click', function (e) {
@@ -253,14 +255,49 @@
     });
   }
 
+  /* ── Anchor Hash Auto-Reveal ────────────────────────────────────────────── */
+  function checkHash() {
+    if (window.location.hash) {
+      try {
+        var target = document.querySelector(window.location.hash);
+        if (target) {
+          if (target.classList.contains('muse')) {
+            var story = target.querySelector('.muse-story');
+            var toggle = target.querySelector('.muse-toggle');
+            if (story && story.hidden) {
+              story.hidden = false;
+              if (toggle) {
+                toggle.setAttribute('aria-expanded', 'true');
+                toggle.textContent = 'Close story -';
+              }
+            }
+          } else if (target.classList.contains('hobby')) {
+            var body = target.querySelector('.hobby-body');
+            var hToggle = target.querySelector('.hobby-toggle');
+            if (body && body.hidden) {
+              body.hidden = false;
+              if (hToggle) hToggle.setAttribute('aria-expanded', 'true');
+              target.classList.add('is-expanded');
+            }
+          }
+          setTimeout(function () {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 120);
+        }
+      } catch (e) {}
+    }
+  }
+
   /* ── Public API (called by route-bg.js SPA engine) ──────────────────────── */
   window.initLastRunCard  = initLastRunCard;
   window.initMuseStories  = initMuseStories;
   window.initHobbyToggles = initHobbyToggles;
+  window.checkHash        = checkHash;
   window.initPersonalPage = function () {
     initLastRunCard();
     initMuseStories();
     initHobbyToggles();
+    checkHash();
     if (window.initRunningCharts) window.initRunningCharts();
   };
 
@@ -270,10 +307,12 @@
       initLastRunCard();
       initMuseStories();
       initHobbyToggles();
+      checkHash();
     });
   } else {
     initLastRunCard();
     initMuseStories();
     initHobbyToggles();
+    checkHash();
   }
 })();
