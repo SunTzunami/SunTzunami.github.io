@@ -1103,7 +1103,7 @@ main>.section:first-child,
   background: var(--bg);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-lg);
-  padding: clamp(24px, 4.5vw, 44px);
+  /* No padding here — handled per child so position:sticky on modal-header works */
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
   z-index: 101;
   overflow-y: auto;
@@ -1118,10 +1118,24 @@ main>.section:first-child,
   transform: translate(-50%, -50%) scale(1);
 }
 
-.modal-close-btn {
+/* Modal header row: sticky at the very top of the scrollable modal.
+   Must have its own padding and background so it covers content beneath it
+   when the user scrolls the modal body. */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: clamp(16px, 3vw, 28px) clamp(24px, 4.5vw, 44px) 8px;
   position: sticky;
   top: 0;
-  float: right;
+  background: var(--bg);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  z-index: 10;
+}
+
+.modal-close-btn {
+  flex-shrink: 0;
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -1133,8 +1147,6 @@ main>.section:first-child,
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: -8px;
-  margin-right: -8px;
   z-index: 10;
   transition: background 0.15s ease, transform 0.15s ease;
   line-height: 1;
@@ -1143,6 +1155,34 @@ main>.section:first-child,
 .modal-close-btn:hover {
   background: var(--surface-hover);
   transform: scale(1.06);
+}
+
+.modal-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px 5px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2, var(--ink));
+  font-size: 0.78rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.modal-copy-btn:hover {
+  background: var(--surface-hover);
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.modal-copy-btn svg {
+  flex-shrink: 0;
+  opacity: 0.7;
 }
 
 body.modal-open {
@@ -1155,7 +1195,8 @@ body.modal-open {
 }
 
 .modal-body {
-  margin-top: 8px;
+  padding: 0 clamp(24px, 4.5vw, 44px) clamp(24px, 4.5vw, 44px);
+  margin-top: 4px;
 }
 
 .modal-body img,

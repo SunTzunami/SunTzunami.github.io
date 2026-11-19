@@ -138,16 +138,24 @@
     });
   }
 
+  function getPageName(urlStr) {
+    try {
+      var p = new URL(urlStr, window.location.origin).pathname;
+      var f = p.split('/').pop() || 'index.html';
+      return (f === '' || f === '/') ? 'index.html' : f;
+    } catch (e) {
+      return 'index.html';
+    }
+  }
+
+  var currentPageName = getPageName(window.location.href);
+
   function updateNavActive(destUrl) {
-    var path = new URL(destUrl, window.location.origin).pathname;
-    var fileName = path.split('/').pop() || 'index.html';
-    if (fileName === '') fileName = 'index.html';
+    var fileName = getPageName(destUrl);
 
     var navLinks = document.querySelectorAll('.nav-links a');
     navLinks.forEach(function (a) {
-      var aPath = new URL(a.href, window.location.origin).pathname;
-      var aFileName = aPath.split('/').pop() || 'index.html';
-      if (aFileName === '') aFileName = 'index.html';
+      var aFileName = getPageName(a.href);
 
       if (aFileName === fileName) {
         a.setAttribute('aria-current', 'page');
@@ -193,6 +201,7 @@
         document.title = newDoc.title;
         var newPage = newDoc.body.getAttribute('data-page') || '';
         document.body.setAttribute('data-page', newPage);
+        currentPageName = getPageName(dest);
 
         // 3. Update navigation active state
         updateNavActive(dest);
@@ -264,20 +273,29 @@
     if (link.origin && link.origin !== window.location.origin) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
-    // Skip same-page anchors
-    if (link.pathname === window.location.pathname && link.search === window.location.search) return;
+    // Skip same-page anchors and same-page links
+    if (getPageName(link.href) === currentPageName && link.search === window.location.search) return;
 
     e.preventDefault();
     navigateTo(link.href, true);
   });
 
   // Handle browser Back/Forward (popstate)
-  // If a modal is open, let the modal handler handle the Back press (close modal, don't navigate)
-  window.addEventListener('popstate', function () {
+  // If a modal is open, let the modal handler handle the Back press (close modal, don't navigate).
+  // Also skip navigation when staying on the same page (hash change, modal dismissal, anchor jump).
+  window.addEventListener('popstate', function (e) {
     var m1 = document.getElementById('reading-modal');
     if (m1 && m1.classList.contains('active')) return;
     var m2 = document.getElementById('run-detail-modal');
     if (m2 && m2.classList.contains('active')) return;
+    if (e.state && (e.state.modalOpen || e.state.runDetailOpen)) return;
+
+    var destPage = getPageName(window.location.href);
+    if (destPage === currentPageName) {
+      // Staying on the same HTML page — never re-fetch or show the kaomoji loader
+      return;
+    }
+
     navigateTo(window.location.href, false);
   });
 

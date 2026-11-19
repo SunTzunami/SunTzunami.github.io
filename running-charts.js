@@ -319,7 +319,7 @@
     addEl(svg, 'circle', { cx: hrPts[hrPts.length - 1].x, cy: hrPts[hrPts.length - 1].y, r: '4.5', fill: 'var(--surface)', stroke: '#e11d48', 'stroke-width': '2.5' });
 
     // X-axis Milestone Labels
-    var step = Math.floor(monthlyList.length / 5);
+    var step = Math.max(1, Math.floor(monthlyList.length / 5));
     for (var k = 0; k < monthlyList.length; k += step) {
       var xPos = padL + (k / (monthlyList.length - 1)) * chartW;
       var xLabel = monthlyList[k].month;
@@ -630,13 +630,29 @@
       });
   }
 
+  var chartsInitialized = false;
+
   function startAll() {
+    // Guard against double-execution: on hard page load personal-page.js runs first
+    // (defer order), calls initRunningCharts which is undefined, so the guard in
+    // personal-page.js (if window.initRunningCharts) skips it. Then running-charts.js
+    // runs and auto-starts below. On SPA navigation, route-bg.js re-runs initPersonalPage
+    // which calls window.initRunningCharts() — allow that by resetting the flag.
+    if (chartsInitialized) return;
+    chartsInitialized = true;
     initDashboard();
     initPersonalRunningGrid();
   }
 
-  window.initRunningCharts = startAll;
+  window.initRunningCharts = function () {
+    // Reset the guard so SPA re-navigation always re-draws the charts
+    chartsInitialized = false;
+    startAll();
+  };
 
+  // Auto-run on hard page load (defer scripts run in order after DOM ready;
+  // personal-page.js runs first and its initRunningCharts call is a no-op since
+  // this script hasn't run yet — so we must trigger it ourselves here).
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', startAll);
   } else {
