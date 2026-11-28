@@ -545,6 +545,9 @@
       .then(function (runs) {
         if (!runs || !runs.length) return;
 
+        var countEl = document.getElementById('tapestry-run-count');
+        if (countEl) countEl.textContent = runs.length;
+
         container.innerHTML = '';
         var frag = document.createDocumentFragment();
         runs.forEach(function (r) {

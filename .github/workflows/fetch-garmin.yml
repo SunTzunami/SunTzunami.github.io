@@ -40,27 +40,221 @@ jobs:
             -H "Authorization: Bearer ${TOKEN}" \
             -o garmin-activities-raw.json
 
-          # 3. Download FIT file for the latest activity to extract GPS route
-          ACTIVITY_ID=$(python3 -c "import json; data=json.load(open('garmin-activities-raw.json')); print(data[0]['activityId'])")
-          echo "Latest activity ID: ${ACTIVITY_ID}"
+          # 3. Transform into lightweight JSON for the site, download FITs & fetch weather
+          GARMIN_TOKEN="${TOKEN}" python3 - <<'PYEOF'
+          import glob, io, json, math, os, sys, urllib.parse, urllib.request, zipfile
+          from datetime import datetime, timezone
 
-          curl -sf -X GET \
-            "https://personal.connectapi.garmin.com/download-service/files/activity/${ACTIVITY_ID}" \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -o activity_download.zip
+          TREADMILL_PATH = "M 32 24 L 68 24 A 26 26 0 0 1 68 76 L 32 76 A 26 26 0 0 1 32 24 Z"
 
-          # Extract FIT file
-          unzip -o activity_download.zip -d fit_temp/
+          WMO_CODES = {
+              0: "Clear",
+              1: "Mainly Clear",
+              2: "Partly Cloudy",
+              3: "Overcast",
+              45: "Fog",
+              48: "Fog",
+              51: "Light Drizzle",
+              53: "Drizzle",
+              55: "Dense Drizzle",
+              56: "Light Drizzle",
+              57: "Dense Drizzle",
+              61: "Light Rain",
+              63: "Rain",
+              65: "Heavy Rain",
+              66: "Light Rain",
+              67: "Heavy Rain",
+              71: "Light Snow",
+              73: "Snow",
+              75: "Heavy Snow",
+              77: "Light Snow",
+              80: "Light Rain",
+              81: "Rain",
+              82: "Heavy Rain",
+              85: "Light Snow",
+              86: "Heavy Snow",
+              95: "Thunderstorm",
+              96: "Thunderstorm",
+              99: "Thunderstorm",
+          }
 
-          # 4. Transform into lightweight JSON for the site
-          python3 - <<'PYEOF'
-          import json, sys, glob
-          from datetime import datetime
+          LOC_COORDS = {
+              "setagaya": (35.646, 139.653),
+              "meguro": (35.641, 139.698),
+              "ota": (35.561, 139.716),
+              "adachi": (35.775, 139.804),
+              "tokyo": (35.676, 139.650),
+              "santa clara": (37.354, -121.955),
+              "bhopal": (23.259, 77.413),
+          }
+
+          STOPS = [
+              (0.00, (0x1e, 0x40, 0xaf)),
+              (0.20, (0x06, 0xb6, 0xd4)),
+              (0.40, (0x22, 0xc5, 0x5e)),
+              (0.65, (0xea, 0xb3, 0x08)),
+              (0.85, (0xf9, 0x73, 0x16)),
+              (1.00, (0xef, 0x44, 0x44)),
+          ]
+
+          TE_LABELS = {
+              "RECOVERY": "Recovery",
+              "AEROBIC_BASE": "Aerobic Base",
+              "BASE": "Aerobic Base",
+              "TEMPO": "Tempo",
+              "LACTATE_THRESHOLD": "Lactate Threshold",
+              "THRESHOLD": "Lactate Threshold",
+              "VO2MAX": "VO2 Max",
+              "VO2_MAX": "VO2 Max",
+              "ANAEROBIC_CAPACITY": "Anaerobic",
+          }
+
+          def speed_color(spd):
+              if spd is None:
+                  return "#22c55e"
+              t = max(0.0, min(1.0, (spd - 8.2) / (12.0 - 8.2)))
+              for i in range(len(STOPS) - 1):
+                  t0, c0 = STOPS[i]
+                  t1, c1 = STOPS[i + 1]
+                  if t <= t1:
+                      u = (t - t0) / (t1 - t0)
+                      r = int(c0[0] + u * (c1[0] - c0[0]))
+                      g = int(c0[1] + u * (c1[1] - c0[1]))
+                      b = int(c0[2] + u * (c1[2] - c0[2]))
+                      return f"#{r:02x}{g:02x}{b:02x}"
+              return "#ef4444"
+
+          def fallback_coords(loc):
+              low = (loc or "").lower()
+              for key, coords in LOC_COORDS.items():
+                  if key in low:
+                      return coords
+              return (35.646, 139.653)
+
+          def build_svg_path(route):
+              mean_lat = sum(c[0] for c in route) / len(route)
+              cos_lat = math.cos(math.radians(mean_lat))
+              pts = [(c[1] * cos_lat, c[0]) for c in route]
+              min_x, max_x = min(p[0] for p in pts), max(p[0] for p in pts)
+              min_y, max_y = min(p[1] for p in pts), max(p[1] for p in pts)
+              span_x = max_x - min_x or 1e-6
+              span_y = max_y - min_y or 1e-6
+              scale = min(80 / span_x, 80 / span_y)
+              ox, oy = (100 - span_x * scale) / 2, (100 - span_y * scale) / 2
+              cmds = [
+                  f"{'M' if i == 0 else 'L'}{round(ox + (x - min_x) * scale, 1)} {round(100 - (oy + (y - min_y) * scale), 1)}"
+                  for i, (x, y) in enumerate(pts)
+              ]
+              return " ".join(cmds)
+
+          def parse_fit_for_activity(activity_id, token):
+              from fitparse import FitFile
+              req = urllib.request.Request(
+                  f"https://personal.connectapi.garmin.com/download-service/files/activity/{activity_id}",
+                  headers={"Authorization": f"Bearer {token}"},
+              )
+              raw_zip = urllib.request.urlopen(req, timeout=30).read()
+              fit_bytes = None
+              with zipfile.ZipFile(io.BytesIO(raw_zip)) as zf:
+                  for name in zf.namelist():
+                      if name.lower().endswith(".fit"):
+                          fit_bytes = zf.read(name)
+                          break
+              if not fit_bytes:
+                  return [], None, {}
+
+              fitfile = FitFile(io.BytesIO(fit_bytes))
+              all_coords = []
+              for record in fitfile.get_messages("record"):
+                  lat = lon = None
+                  for field in record.fields:
+                      if field.name == "position_lat" and field.value is not None:
+                          lat = field.value * (180.0 / 2**31)
+                      elif field.name == "position_long" and field.value is not None:
+                          lon = field.value * (180.0 / 2**31)
+                  if lat and lon:
+                      all_coords.append([round(lat, 6), round(lon, 6)])
+
+              if len(all_coords) > 120:
+                  step = max(1, len(all_coords) // 120)
+                  route = [all_coords[0]] + all_coords[step::step] + [all_coords[-1]]
+              else:
+                  route = all_coords
+
+              session_meta = {}
+              for sess in fitfile.get_messages("session"):
+                  vals = {f.name: f.value for f in sess.fields if f.value is not None}
+                  if vals.get("enhanced_max_speed") or vals.get("max_speed"):
+                      ms = vals.get("enhanced_max_speed") or vals.get("max_speed")
+                      session_meta["max_spd"] = round(ms * 3.6, 1)
+                  if vals.get("avg_running_cadence") is not None:
+                      cad = vals["avg_running_cadence"]
+                      if cad < 120:
+                          cad *= 2
+                      session_meta["cadence"] = int(round(cad))
+                  elif vals.get("avg_cadence") is not None:
+                      cad = vals["avg_cadence"]
+                      if cad < 120:
+                          cad *= 2
+                      session_meta["cadence"] = int(round(cad))
+                  if vals.get("avg_power") is not None:
+                      session_meta["pwr"] = int(round(vals["avg_power"]))
+                  if vals.get("total_training_effect") is not None:
+                      session_meta["te_val"] = round(float(vals["total_training_effect"]), 1)
+
+              start_coord = (all_coords[0][0], all_coords[0][1]) if all_coords else None
+              print(f"FIT {activity_id}: {len(all_coords)} GPS points -> {len(route)}")
+              return route, start_coord, session_meta
+
+          def fetch_weather(date_str, time_str, lat, lon):
+              hh, mm = [int(x) for x in time_str.split(":")]
+              if mm >= 30 and hh < 23:
+                  hh += 1
+              target_key = f"{date_str}T{hh:02d}:00"
+              params = urllib.parse.urlencode({
+                  "latitude": round(lat, 4),
+                  "longitude": round(lon, 4),
+                  "hourly": "temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code",
+                  "timezone": "auto",
+              })
+              urls = [
+                  f"https://api.open-meteo.com/v1/forecast?{params}&past_days=14&forecast_days=1",
+                  f"https://archive-api.open-meteo.com/v1/archive?{params}&start_date={date_str}&end_date={date_str}",
+              ]
+              for u in urls:
+                  try:
+                      payload = json.loads(urllib.request.urlopen(u, timeout=15).read().decode())
+                      hourly = payload.get("hourly", {})
+                      times = hourly.get("time", [])
+                      if target_key in times:
+                          idx = times.index(target_key)
+                          temp = hourly["temperature_2m"][idx]
+                          humid = hourly["relative_humidity_2m"][idx]
+                          wind = hourly["wind_speed_10m"][idx]
+                          code = hourly["weather_code"][idx]
+                          if temp is not None:
+                              return {
+                                  "temp": round(float(temp), 1),
+                                  "wind": round(float(wind), 1) if wind is not None else None,
+                                  "cond": WMO_CODES.get(code, "Clear"),
+                                  "humid": int(round(float(humid))) if humid is not None else None,
+                              }
+                  except Exception as e:
+                      print(f"Weather lookup note ({u[:45]}...): {e}", file=sys.stderr)
+              return {}
+
+          def map_te_label(raw_act):
+              msg = raw_act.get("aerobicTrainingEffectMessage") or raw_act.get("trainingEffectLabel") or ""
+              for key, label in TE_LABELS.items():
+                  if key in msg.upper():
+                      return label
+              return None
 
           # ---- Parse activities list ----
           with open("garmin-activities-raw.json") as f:
               raw = json.load(f)
 
+          raw_by_id = {a.get("activityId"): a for a in raw if a.get("activityId")}
           activities = []
           for a in raw:
               activity = {
@@ -94,34 +288,6 @@ jobs:
               activity["typeLabel"] = type_labels.get(activity["type"], "Run")
               activities.append(activity)
 
-          # ---- Parse GPS route from FIT file ----
-          route = []
-          try:
-              from fitparse import FitFile
-              fit_files = glob.glob("fit_temp/*.fit")
-              if fit_files:
-                  fitfile = FitFile(fit_files[0])
-                  all_coords = []
-                  for record in fitfile.get_messages("record"):
-                      lat = lon = None
-                      for field in record.fields:
-                          if field.name == "position_lat" and field.value is not None:
-                              lat = field.value * (180.0 / 2**31)
-                          if field.name == "position_long" and field.value is not None:
-                              lon = field.value * (180.0 / 2**31)
-                      if lat and lon:
-                          all_coords.append([round(lat, 6), round(lon, 6)])
-
-                  # Simplify to ~120 points for a lightweight polyline
-                  if len(all_coords) > 120:
-                      step = max(1, len(all_coords) // 120)
-                      route = [all_coords[0]] + all_coords[step::step] + [all_coords[-1]]
-                  else:
-                      route = all_coords
-                  print(f"Extracted {len(all_coords)} GPS points, simplified to {len(route)}")
-          except Exception as e:
-              print(f"Warning: Could not parse FIT GPS data: {e}", file=sys.stderr)
-
           # Load existing data to preserve historical summary, yearly, and timeseries stats
           try:
               with open("garmin-activities.json") as f:
@@ -130,10 +296,11 @@ jobs:
               existing = {}
 
           existing_summary = existing.get("summary", {})
+          existing_yearly = existing.get("yearly", {})
           existing_acts = existing.get("activities", [])
           existing_ids = {a.get("id") or a.get("date") for a in existing_acts}
 
-          # Update summary if new qualifying activities arrived
+          # Update summary & yearly totals if new qualifying activities arrived
           for act in activities:
               act_key = act.get("id") or act.get("date")
               if act_key and act_key not in existing_ids:
@@ -143,10 +310,17 @@ jobs:
                   existing_summary["total_runs"] = existing_summary.get("total_runs", 0) + 1
                   existing_summary["total_duration_hours"] = round(existing_summary.get("total_duration_hours", 0) + dur / 60, 1)
 
+                  yr = (act.get("date") or "")[:4]
+                  if yr and yr in existing_yearly:
+                      y = existing_yearly[yr]
+                      y["runs"] = y.get("runs", 0) + 1
+                      y["distance_km"] = round(y.get("distance_km", 0) + dist, 1)
+                      y["duration_hours"] = round(y.get("duration_hours", 0) + dur / 60, 1)
+
           output = {
-              "updated": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
               "summary": existing_summary,
-              "yearly": existing.get("yearly", {}),
+              "yearly": existing_yearly,
               "monthly": existing.get("monthly", []),
               "weekly_trend": existing.get("weekly_trend", []),
               "timeseries": existing.get("timeseries", {}),
@@ -156,46 +330,112 @@ jobs:
           with open("garmin-activities.json", "w") as f:
               json.dump(output, f, indent=2)
 
-          # Update runs-2026-grid.json if new run has GPS coordinates
+          # Sync all qualifying activities from this batch into runs-2026-grid.json
+          token = os.environ.get("GARMIN_TOKEN", "")
           try:
               with open("runs-2026-grid.json") as gf:
                   grid = json.load(gf)
-              if activities and route:
-                  latest_act = activities[0]
-                  if not any(g.get("id") == latest_act.get("id") for g in grid):
-                      import math
-                      mean_lat = sum(c[0] for c in route) / len(route)
-                      cos_lat = math.cos(math.radians(mean_lat))
-                      pts = [(c[1] * cos_lat, c[0]) for c in route]
-                      min_x, max_x = min(p[0] for p in pts), max(p[0] for p in pts)
-                      min_y, max_y = min(p[1] for p in pts), max(p[1] for p in pts)
-                      span_x = max_x - min_x or 1e-6
-                      span_y = max_y - min_y or 1e-6
-                      scale = min(80 / span_x, 80 / span_y)
-                      ox, oy = (100 - span_x * scale) / 2, (100 - span_y * scale) / 2
-                      cmds = [f"{'M' if i==0 else 'L'}{round(ox + (x - min_x) * scale, 1)} {round(100 - (oy + (y - min_y) * scale), 1)}" for i, (x, y) in enumerate(pts)]
-                      pm = int(latest_act.get("avg_pace_min_km", 0))
-                      ps = int(round((latest_act.get("avg_pace_min_km", 0) % 1) * 60))
-                      grid.append({
-                          "id": latest_act.get("id"),
-                          "date": latest_act.get("date")[:10],
-                          "time": latest_act.get("date")[11:16],
-                          "dist": latest_act.get("distance_km"),
-                          "dur": latest_act.get("duration_min"),
+              grid_by_id = {g.get("id"): g for g in grid if g.get("id")}
+
+              for act in reversed(activities):
+                  aid = act.get("id")
+                  date_full = act.get("date", "")
+                  if not aid or not date_full.startswith("2026"):
+                      continue
+
+                  raw_act = raw_by_id.get(aid, {})
+                  existing_entry = grid_by_id.get(aid)
+                  needs_fit = (
+                      existing_entry is None
+                      or existing_entry.get("cadence") is None
+                      or existing_entry.get("max_spd") is None
+                  ) and act.get("type") != "treadmill_running"
+
+                  route, start_coord, fit_meta = [], None, {}
+                  if needs_fit and token:
+                      try:
+                          route, start_coord, fit_meta = parse_fit_for_activity(aid, token)
+                      except Exception as e:
+                          print(f"Warning: Could not parse FIT for {aid}: {e}", file=sys.stderr)
+
+                  if existing_entry is None:
+                      pace_val = act.get("avg_pace_min_km") or (act["duration_min"] / act["distance_km"])
+                      pm, ps = divmod(int(round(pace_val * 60)), 60)
+                      is_treadmill = (act.get("type") == "treadmill_running") or (not route)
+                      entry = {
+                          "id": aid,
+                          "date": date_full[:10],
+                          "time": date_full[11:16],
+                          "dist": act.get("distance_km"),
+                          "dur": act.get("duration_min"),
                           "pace": f"{pm}:{ps:02d}",
-                          "hr": latest_act.get("avg_hr"),
-                          "loc": latest_act.get("location") or latest_act.get("locationName", "Setagaya Ward"),
-                          "path": " ".join(cmds)
-                      })
-                      with open("runs-2026-grid.json", "w") as gf:
-                          json.dump(grid, gf)
+                          "hr": int(round(act["avg_hr"])) if act.get("avg_hr") is not None else None,
+                          "loc": act.get("location") or "Setagaya Ward",
+                          "path": TREADMILL_PATH if is_treadmill else build_svg_path(route),
+                      }
+                      if is_treadmill:
+                          entry["is_track"] = True
+                      grid.append(entry)
+                      grid_by_id[aid] = entry
+                  else:
+                      entry = existing_entry
+
+                  # Populate / backfill telemetry fields
+                  if entry.get("spd") is None:
+                      if raw_act.get("averageSpeed"):
+                          entry["spd"] = round(raw_act["averageSpeed"] * 3.6, 1)
+                      elif entry.get("dist") and entry.get("dur"):
+                          entry["spd"] = round(entry["dist"] / (entry["dur"] / 60), 1)
+                  if entry.get("max_spd") is None:
+                      if raw_act.get("maxSpeed"):
+                          entry["max_spd"] = round(raw_act["maxSpeed"] * 3.6, 1)
+                      elif fit_meta.get("max_spd"):
+                          entry["max_spd"] = fit_meta["max_spd"]
+                  if entry.get("max_hr") is None and act.get("max_hr") is not None:
+                      entry["max_hr"] = int(round(act["max_hr"]))
+                  if entry.get("cadence") is None:
+                      cad = raw_act.get("averageRunningCadenceInStepsPerMinute") or fit_meta.get("cadence")
+                      if cad is not None:
+                          entry["cadence"] = int(round(cad))
+                  if entry.get("elev") is None and act.get("elevation_gain_m") is not None and not entry.get("is_track"):
+                      entry["elev"] = int(round(act["elevation_gain_m"]))
+                  if entry.get("cal") is None and act.get("calories") is not None:
+                      entry["cal"] = int(round(act["calories"]))
+                  if entry.get("steps") is None and raw_act.get("steps") is not None:
+                      entry["steps"] = int(round(raw_act["steps"]))
+                  if entry.get("pwr") is None:
+                      pwr = raw_act.get("avgPower") or fit_meta.get("pwr")
+                      if pwr is not None:
+                          entry["pwr"] = int(round(pwr))
+                  if entry.get("te") is None:
+                      te_lbl = map_te_label(raw_act)
+                      if te_lbl:
+                          entry["te"] = te_lbl
+                  if entry.get("te_val") is None:
+                      te_v = raw_act.get("aerobicTrainingEffect") or fit_meta.get("te_val")
+                      if te_v is not None:
+                          entry["te_val"] = round(float(te_v), 1)
+
+                  # Fetch weather if missing
+                  if entry.get("temp") is None:
+                      lat, lon = start_coord if start_coord else fallback_coords(entry.get("loc"))
+                      wx = fetch_weather(entry["date"], entry["time"], lat, lon)
+                      if wx:
+                          entry.update(wx)
+
+                  if entry.get("color") is None and entry.get("spd") is not None:
+                      entry["color"] = speed_color(entry["spd"])
+
+              grid.sort(key=lambda g: (g.get("date", ""), g.get("time", ""), g.get("id", 0)))
+              with open("runs-2026-grid.json", "w") as gf:
+                  json.dump(grid, gf)
           except Exception as e:
-              print(f"Note: grid sync skipped: {e}")
+              print(f"Note: grid sync skipped: {e}", file=sys.stderr)
 
           print(f"Wrote {len(activities)} running activities")
           PYEOF
 
-          rm -rf garmin-activities-raw.json activity_download.zip fit_temp/
+          rm -f garmin-activities-raw.json
 
       - name: Commit updated data
         run: |
